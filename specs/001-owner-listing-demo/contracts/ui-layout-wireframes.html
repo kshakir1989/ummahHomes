@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ummahHomes — UI layout wireframes (5 options per screen)</title>
+  <style>
+    :root {
+      --green-deep: #145A3A;
+      --green-mid: #1B6B4A;
+      --green-soft: #E8F3ED;
+      --brown-deep: #3E2723;
+      --brown-mid: #6D4C41;
+      --sand: #F5F0E8;
+      --cream: #FFFBF5;
+      --video: #5a4a42;
+      --border: #8D6E63;
+      --muted: #9ca3af;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #1a1a1e;
+      color: #f5f5f5;
+      display: flex;
+      min-height: 100vh;
+    }
+    nav.sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--brown-deep);
+      padding: 16px 12px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    nav.sidebar h1 { font-size: 14px; margin: 0 0 8px; color: var(--green-soft); }
+    nav.sidebar p { font-size: 11px; color: #c4b5a8; margin: 0 0 16px; line-height: 1.4; }
+    nav.sidebar a {
+      display: block;
+      font-size: 12px;
+      color: #e8e0d8;
+      text-decoration: none;
+      padding: 6px 8px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+    }
+    nav.sidebar a:hover { background: rgba(255,255,255,0.08); }
+    nav.sidebar .section { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #8D6E63; margin: 14px 0 6px 8px; }
+    main { flex: 1; padding: 24px 32px 80px; max-width: 1400px; }
+    section.screen { margin-bottom: 48px; scroll-margin-top: 24px; }
+    section.screen h2 { font-size: 20px; margin: 0 0 4px; color: var(--green-soft); }
+    section.screen .meta { font-size: 13px; color: #a8a29e; margin-bottom: 20px; }
+    .options-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .option-card {
+      background: #2a2a2e;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #3f3f46;
+    }
+    .option-card.selected { border-color: var(--green-mid); box-shadow: 0 0 0 2px var(--green-mid); }
+    .option-card h3 { font-size: 11px; margin: 0 0 8px; color: #d4d4d8; font-weight: 600; }
+    .option-card h3 span { color: var(--green-soft); }
+    .wireframe {
+      background: var(--sand);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      font-size: 0;
+    }
+    .wireframe.mobile { width: 100%; aspect-ratio: 390 / 844; max-width: 195px; margin: 0 auto; }
+    .wireframe.desktop { width: 100%; aspect-ratio: 16 / 10; }
+    .wf { display: flex; flex-direction: column; width: 100%; height: 100%; font-size: 7px; }
+    .wf-row { display: flex; width: 100%; min-height: 0; flex: 1; }
+    .wf-col { display: flex; flex-direction: column; min-width: 0; }
+    .b {
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 2px; line-height: 1.2;
+      font-weight: 600; color: #333; overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-b { background: var(--green-deep); color: #fff; flex-shrink: 0; min-height: 14px; font-size: 6px; }
+    .video-b { background: linear-gradient(135deg, var(--video), var(--brown-deep)); color: #fff; font-size: 6px; }
+    .hero-b { background: linear-gradient(180deg, rgba(62,39,35,0.3), rgba(62,39,35,0.7)), var(--video); color: #fff; }
+    .sand-b { background: var(--sand); color: var(--brown-mid); }
+    .cream-b { background: var(--cream); color: var(--brown-mid); }
+    .green-b { background: var(--green-mid); color: #fff; }
+    .green-soft-b { background: var(--green-soft); color: var(--green-deep); }
+    .brown-b { background: var(--brown-deep); color: #fff; }
+    .chip-b { background: #fff; border: 1px solid var(--border); color: var(--brown-mid); font-size: 5px; }
+    .card-b { background: #fff; border: 1px solid #ddd; color: #888; font-size: 5px; }
+    .img-b { background: #d4d4d8; color: #666; }
+    .cta-b { background: var(--green-mid); color: #fff; font-size: 6px; min-height: 12px; }
+    .muted-b { background: #e5e7eb; color: #6b7280; font-size: 5px; }
+    .overlay-b { background: rgba(0,0,0,0.4); color: #fff; }
+    .tabs-b { background: var(--brown-mid); color: #fff; font-size: 5px; min-height: 10px; }
+    .bubble-out { background: var(--green-mid); color: #fff; border-radius: 6px 6px 2px 6px; margin: 2px; font-size: 5px; }
+    .bubble-in { background: var(--cream); color: #333; border-radius: 6px 6px 6px 2px; margin: 2px; font-size: 5px; }
+    .pick-btn {
+      margin-top: 8px; width: 100%; padding: 6px; font-size: 11px;
+      background: transparent; border: 1px solid var(--border); color: #d4d4d8;
+      border-radius: 4px; cursor: pointer;
+    }
+    .pick-btn:hover { background: var(--green-deep); border-color: var(--green-mid); color: #fff; }
+    #choices {
+      position: fixed; bottom: 0; left: 220px; right: 0;
+      background: #18181b; border-top: 1px solid #3f3f46;
+      padding: 10px 24px; font-size: 12px; max-height: 120px; overflow-y: auto;
+    }
+    #choices strong { color: var(--green-soft); }
+    .legend { font-size: 11px; color: #a8a29e; margin-bottom: 24px; line-height: 1.6; }
+    .legend span { display: inline-block; width: 12px; height: 12px; vertical-align: middle; margin-right: 4px; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <nav class="sidebar" id="nav"></nav>
+  <main>
+    <p class="legend">
+      <strong>How to use:</strong> Click <em>Pick option N</em> on your preferred wireframe per screen.
+      Choices appear in the bar at the bottom. Green/brown + video parallax on entry/browse per your brief.
+      <br><span style="background:var(--green-deep)"></span> Nav &nbsp;
+      <span style="background:var(--video)"></span> Video parallax &nbsp;
+      <span style="background:var(--sand)"></span> Sand &nbsp;
+      <span style="background:var(--green-mid)"></span> CTA
+    </p>
+    <div id="screens"></div>
+  </main>
+  <div id="choices"><strong>Your picks:</strong> <span id="pick-list">None yet — click Pick option on each screen.</span></div>
+
+  <script>
+    const picks = {};
+
+    function wfDesktop(children) {
+      return `<div class="wireframe desktop"><div class="wf">${children}</div></div>`;
+    }
+    function wfMobile(children) {
+      return `<div class="wireframe mobile"><div class="wf">${children}</div></div>`;
+    }
+    function row(...cols) {
+      return `<div class="wf-row">${cols.map(c => `<div class="wf-col" style="flex:${c.flex||1}">${c.html}</div>`).join('')}</div>`;
+    }
+    function b(cls, label, style = '') {
+      return `<div class="b ${cls}" style="${style}">${label}</div>`;
+    }
+    function grid(cols, rows, label = 'card') {
+      let h = '';
+      for (let r = 0; r < rows; r++) {
+        h += '<div class="wf-row" style="flex:1">';
+        for (let c = 0; c < cols; c++) h += `<div style="flex:1;padding:2px">${b('card-b', label)}</div>`;
+        h += '</div>';
+      }
+      return h;
+    }
+    function nav() { return b('nav-b', 'Ummah Homes · Browse · List · Sign in'); }
+    function video(h, label = '▶ interior video (loop)') {
+      return b('video-b', label, `flex:${h};min-height:${h}px`);
+    }
+    function chips() {
+      return `<div class="wf-row" style="flex:0">${['Sale','Rent','Room','Basement'].map(t=>`<div style="flex:1;padding:1px">${b('chip-b',t)}</div>`).join('')}</div>`;
+    }
+    function bottomNav() {
+      return `<div class="wf-row" style="flex:0">${['Browse','List','Msgs','Account'].map(t=>`<div style="flex:1">${b('muted-b',t)}</div>`).join('')}</div>`;
+    }
+
+    const screens = [
+      { id: 'entry', title: 'entry — Company / product entry (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow Classic Hero', html: wfDesktop(
+          nav() + b('hero-b','VIDEO PARALLAX — full viewport','flex:3') +
+          `<div class="wf-row" style="flex:0;justify-content:center;gap:4px;padding:4px"><div style="width:40%">${b('cta-b','Browse listings')}</div><div style="width:30%">${b('cream-b','Sign in')}</div></div>` +
+          row({flex:1,html:b('sand-b','3 value props')},{flex:1,html:b('sand-b','')},{flex:1,html:b('sand-b','')})
+        )},
+        { n: 2, name: 'Split Hero', html: wfDesktop(
+          nav() + row({flex:3,html:b('hero-b','VIDEO 55%')},{flex:2,html:b('cream-b','Logo + purpose + CTAs stacked')}) +
+          b('green-soft-b','How it works: List → Connect → Move in','flex:1')
+        )},
+        { n: 3, name: 'Search-First Landing', html: wfDesktop(
+          nav() + b('hero-b','VIDEO + search bar (location + type tabs)','flex:3') +
+          b('sand-b','Trust row: owner-listed · no MLS','flex:0.5') + b('muted-b','Sign in link','flex:0.3')
+        )},
+        { n: 4, name: 'Story Scroll', html: wfDesktop(
+          nav() + b('hero-b','VIDEO (shorter)','flex:1.5') + b('brown-b','Brown band + Browse CTA','flex:1') +
+          row({flex:1,html:b('green-soft-b','Seller')},{flex:1,html:b('green-soft-b','Renter')},{flex:1,html:b('green-soft-b','Buyer')})
+        )},
+        { n: 5, name: 'Minimal Brand', html: wfDesktop(
+          b('hero-b','VIDEO + wordmark','flex:4') +
+          `<div class="wf-row" style="flex:0"><div style="flex:1">${b('cta-b','Browse')}</div><div style="flex:1">${b('cream-b','Sign in')}</div></div>` +
+          b('sand-b','mini catalog preview strip ↓','flex:0.8')
+        )}
+      ]},
+      { id: 'browse', title: 'browse — Public catalog (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow Results Grid', html: wfDesktop(nav() + b('hero-b','video strip 200px + search','flex:0.8') + chips() + grid(3,2,'listing')) },
+        { n: 2, name: 'List + Left Filters', html: wfDesktop(nav() + row({flex:1,html:b('cream-b','filters<br>type<br>price')},{flex:3,html:grid(1,3,'list row')})) },
+        { n: 3, name: 'Video Band + Grid', html: wfDesktop(nav() + b('hero-b','video 35vh + search overlay','flex:1.2') + grid(3,2,'listing')) },
+        { n: 4, name: 'Tabbed Catalog', html: wfDesktop(nav() + b('tabs-b','Sale | Home rent | Room | Basement') + b('brown-b','42 results') + grid(3,2,'listing')) },
+        { n: 5, name: 'Magazine Browse', html: wfDesktop(nav() + b('muted-b','filter drawer ▼') + row({flex:1,html:b('card-b','featured XL')},{flex:1,html:b('card-b','featured XL')}) + grid(4,2,'listing')) }
+      ]},
+      { id: 'listing-detail', title: 'listing-detail (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow Detail Split', html: wfDesktop(nav() + row({flex:2,html:b('img-b','photo carousel')},{flex:1,html:b('cream-b','price · type · location · desc · CTA')})) },
+        { n: 2, name: 'Full-Bleed Gallery', html: wfDesktop(b('img-b','edge-to-edge gallery','flex:2') + b('cream-b','content card overlaps ↑','flex:1.5')) },
+        { n: 3, name: 'Two-Column Info', html: wfDesktop(nav() + row({flex:2,html:b('img-b','gallery')},{flex:1,html:b('cream-b','facts + CTA')}) + b('sand-b','full-width description','flex:0.8')) },
+        { n: 4, name: 'Immersive Brown', html: wfDesktop(b('brown-b','← back · share','flex:0.4') + b('img-b','gallery','flex:2') + b('sand-b','content + green CTA','flex:1')) },
+        { n: 5, name: 'Minimal Demo', html: wfDesktop(nav() + b('img-b','single image','flex:2') + b('sand-b','fields stack','flex:1') + b('cta-b','Apply / Express interest','flex:0.4')) }
+      ]},
+      { id: 'sign-in', title: 'sign-in (web)', mobile: false, options: [
+        { n: 1, name: 'Center Card Modal', html: wfDesktop(nav() + b('sand-b','','flex:1') + `<div style="padding:20% 25%">${b('cream-b','role tiles 2×2')}</div>`) },
+        { n: 2, name: 'Zillow-Style Panel', html: wfDesktop(row({flex:1,html:b('brown-b','brand story')},{flex:1,html:b('cream-b','demo accounts list')})) },
+        { n: 3, name: 'Inline Gate', html: wfDesktop(nav() + b('overlay-b','dimmed listing behind','flex:3') + `<div style="padding:15% 20%">${b('cream-b','role picker modal')}</div>`) },
+        { n: 4, name: 'Dropdown Compact', html: wfDesktop(nav().replace('Sign in','Sign in ▼') + b('cream-b','dropdown: demo users','flex:0.6') + b('sand-b','page content','flex:3')) },
+        { n: 5, name: 'Role Cards Horizontal', html: wfDesktop(nav() + row({flex:1,html:b('green-soft-b','Seller')},{flex:1,html:b('green-soft-b','Buyer')},{flex:1,html:b('green-soft-b','Renter')},{flex:1,html:b('green-soft-b','Admin')})) }
+      ]},
+      { id: 'seller-listing-form', title: 'seller-listing-form (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow Sell Flow', html: wfDesktop(nav() + b('muted-b','Type → Details → Photos → Publish','flex:0.4') + b('cream-b','4 type tiles + form fields','flex:3') + b('cta-b','Next','flex:0.35')) },
+        { n: 2, name: 'Single Page Form', html: wfDesktop(nav() + b('cream-b','all fields scroll','flex:3') + `<div class="wf-row" style="flex:0"><div style="flex:1">${b('muted-b','Save draft')}</div><div style="flex:1">${b('cta-b','Publish')}</div></div>`) },
+        { n: 3, name: 'Side Nav Wizard', html: wfDesktop(nav() + row({flex:1,html:b('green-soft-b','steps ✓')},{flex:3,html:b('cream-b','form fields')})) },
+        { n: 4, name: 'Card Sections', html: wfDesktop(nav() + b('cream-b','▼ section 1','flex:0.8') + b('cream-b','▼ section 2','flex:0.8') + b('cream-b','▼ section 3','flex:0.8')) },
+        { n: 5, name: 'Split Preview', html: wfDesktop(nav() + row({flex:2,html:b('cream-b','form')},{flex:1,html:b('card-b','live preview card')})) }
+      ]},
+      { id: 'seller-fee-stub', title: 'seller-fee-stub (web)', mobile: false, options: [
+        { n: 1, name: 'Checkout Lite', html: wfDesktop(nav() + `<div style="padding:20% 30%">${b('cream-b','fee line item · Acknowledge CTA')}</div>`) },
+        { n: 2, name: 'Modal Step', html: wfDesktop(nav() + b('overlay-b','form dimmed','flex:3') + `<div style="padding:25% 28%">${b('cream-b','modal: fee stub')}</div>`) },
+        { n: 3, name: 'Inline Banner', html: wfDesktop(nav() + b('brown-b','⚠ complete fee stub','flex:0.5') + b('cream-b','publish form','flex:3')) },
+        { n: 4, name: 'Receipt Preview', html: wfDesktop(nav() + `<div style="padding:15% 25%">${b('cream-b','receipt $— (demo)')}</div>`) },
+        { n: 5, name: 'Full Page Gate', html: wfDesktop(b('brown-b','← back','flex:0.4') + b('cream-b','dedicated fee page','flex:3') + b('cta-b','Acknowledge','flex:0.4')) }
+      ]},
+      { id: 'seller-requests', title: 'seller-requests (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow Inbox Rows', html: wfDesktop(nav() + b('muted-b','filter by listing','flex:0.4') + b('cream-b','row: seeker · status · Accept/Deny','flex:0.5') + b('cream-b','row','flex:0.5') + b('cream-b','row','flex:0.5')) },
+        { n: 2, name: 'Kanban Lite', html: wfDesktop(nav() + row({flex:1,html:b('green-soft-b','Submitted')},{flex:1,html:b('green-soft-b','Accepted')},{flex:1,html:b('green-soft-b','Denied')})) },
+        { n: 3, name: 'Master-Detail', html: wfDesktop(nav() + row({flex:1,html:b('cream-b','request list')},{flex:2,html:b('sand-b','detail + Message')})) },
+        { n: 4, name: 'Grouped by Listing', html: wfDesktop(nav() + b('cream-b','▼ Listing A — 3 requests','flex:0.8') + b('cream-b','▼ Listing B','flex:0.8')) },
+        { n: 5, name: 'Card Grid', html: wfDesktop(nav() + grid(2,2,'request card')) }
+      ]},
+      { id: 'seeker-request', title: 'seeker-request (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow Tour Request', html: wfDesktop(nav() + b('muted-b','listing summary header','flex:0.6') + b('cream-b','optional message','flex:2') + b('cta-b','Apply / Express interest','flex:0.4')) },
+        { n: 2, name: 'One-Tap Apply', html: wfDesktop(nav() + b('sand-b','','flex:2') + b('cta-b','Apply — confirm?','flex:0.6')) },
+        { n: 3, name: 'Split Context', html: wfDesktop(b('brown-b','header','flex:0.3') + row({flex:1,html:b('card-b','mini listing')},{flex:2,html:b('cream-b','form')})) },
+        { n: 4, name: 'Step Flow', html: wfDesktop(nav() + b('muted-b','step 1 of 2','flex:0.3') + b('cream-b','apply','flex:2') + b('muted-b','→ BG stub','flex:0.4')) },
+        { n: 5, name: 'Drawer', html: wfDesktop(nav() + b('sand-b','page','flex:2') + b('cream-b','bottom sheet form','flex:1.2')) }
+      ]},
+      { id: 'seeker-bg-stub', title: 'seeker-bg-stub (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow-Style Disclosure', html: wfDesktop(nav() + `<div style="padding:18% 22%">${b('cream-b','BG check demo · Pass/Fail · Decline')}</div>`) },
+        { n: 2, name: 'Wizard Step', html: wfDesktop(nav() + b('muted-b','● ○ ○','flex:0.3') + b('cream-b','screening step','flex:3')) },
+        { n: 3, name: 'Modal', html: wfDesktop(nav() + b('overlay-b','','flex:2') + `<div style="padding:30% 20%">${b('cream-b','BG modal')}</div>`) },
+        { n: 4, name: 'Inline Expandable', html: wfDesktop(nav() + b('cream-b','Apply form','flex:1.5') + b('green-soft-b','▼ BG stub expanded','flex:1')) },
+        { n: 5, name: 'Separate Route', html: wfDesktop(b('brown-b','Screening (demo)','flex:0.5') + b('cream-b','content','flex:3')) }
+      ]},
+      { id: 'message-thread', title: 'message-thread (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow Messages', html: wfDesktop(nav() + row({flex:1,html:b('cream-b','threads')},{flex:2,html:b('sand-b','listing header') + b('bubble-in','Hi') + b('bubble-out','Hello') + b('muted-b','composer')})) },
+        { n: 2, name: 'Full-Width Chat', html: wfDesktop(nav() + b('bubble-in','messages','flex:3') + b('muted-b','input','flex:0.4')) },
+        { n: 3, name: 'Split Header', html: wfDesktop(b('cream-b','thumb + seeker name sticky','flex:0.5') + b('sand-b','chat','flex:3')) },
+        { n: 4, name: 'Card Thread', html: wfDesktop(nav() + b('card-b','msg card','flex:0.6') + b('brown-b','— today —','flex:0.2') + b('card-b','msg card','flex:0.6')) },
+        { n: 5, name: 'Minimal Demo', html: wfDesktop(nav() + b('muted-b','plain messages','flex:3') + b('muted-b','[ input ]','flex:0.35')) }
+      ]},
+      { id: 'admin-surface', title: 'admin-surface (web)', mobile: false, options: [
+        { n: 1, name: 'Zillow Admin Table', html: wfDesktop(b('green-b','Admin · Users | Listings','flex:0.5') + b('cream-b','table + row actions','flex:3')) },
+        { n: 2, name: 'Dashboard Cards', html: wfDesktop(nav() + row({flex:1,html:b('card-b','KPI')},{flex:1,html:b('card-b','KPI')},{flex:1,html:b('card-b','KPI')}) + b('cream-b','tables','flex:2')) },
+        { n: 3, name: 'Master-Detail', html: wfDesktop(b('green-b','Admin','flex:0.4') + row({flex:1,html:b('cream-b','entity list')},{flex:2,html:b('sand-b','detail + actions')})) },
+        { n: 4, name: 'Single Scroll', html: wfDesktop(b('green-b','Admin','flex:0.4') + b('cream-b','Users section','flex:1.5') + b('cream-b','Listings section','flex:1.5')) },
+        { n: 5, name: 'Dark Ops', html: wfDesktop(row({flex:0.6,html:b('brown-b','nav')},{flex:3,html:b('cream-b','content + destructive actions')})) }
+      ]},
+      { id: 'browse-mobile', title: 'browse-mobile', mobile: true, options: [
+        { n: 1, name: 'Zillow App Home', html: wfMobile(nav() + b('hero-b','video 40vh + search','flex:1.2') + chips() + b('card-b','listing card','flex:0.6') + b('card-b','listing','flex:0.6') + bottomNav()) },
+        { n: 2, name: 'No Video Browse', html: wfMobile(nav() + b('cream-b','search','flex:0.5') + b('card-b','card','flex:0.7') + b('card-b','card','flex:0.7') + bottomNav()) },
+        { n: 3, name: 'Map Placeholder', html: wfMobile(nav() + b('muted-b','map stub','flex:1.5') + b('cream-b','list sheet ↑','flex:1.2') + bottomNav()) },
+        { n: 4, name: 'Type Tabs', html: wfMobile(nav() + b('tabs-b','tabs') + b('card-b','cards','flex:2') + bottomNav()) },
+        { n: 5, name: 'Featured Carousel', html: wfMobile(nav() + b('img-b','carousel →','flex:0.8') + b('card-b','list','flex:2') + bottomNav()) }
+      ]},
+      { id: 'listing-detail-mobile', title: 'listing-detail-mobile', mobile: true, options: [
+        { n: 1, name: 'Zillow Mobile PDP', html: wfMobile(nav() + b('img-b','swipe gallery','flex:1.2') + b('sand-b','price · location','flex:0.5') + b('cta-b','sticky CTA bar','flex:0.35')) },
+        { n: 2, name: 'Collapsing Header', html: wfMobile(b('img-b','gallery → thin bar','flex:1.5') + b('sand-b','content scroll','flex:2') + b('cta-b','CTA','flex:0.35')) },
+        { n: 3, name: 'Full Screen Gallery', html: wfMobile(b('img-b','gallery + dots','flex:2') + b('cream-b','sheet content ↑','flex:1.5')) },
+        { n: 4, name: 'Compact', html: wfMobile(nav() + b('img-b','image','flex:1') + b('sand-b','text','flex:1.2') + b('cta-b','CTA','flex:0.35')) },
+        { n: 5, name: 'Brown Hero', html: wfMobile(b('img-b','photo','flex:1') + b('brown-b','gradient','flex:0.3') + b('cream-b','overlap card','flex:1.2')) }
+      ]},
+      { id: 'sign-in-mobile', title: 'sign-in-mobile', mobile: true, options: [
+        { n: 1, name: 'Bottom Sheet Picker', html: wfMobile(nav() + b('sand-b','listing dimmed','flex:2') + b('cream-b','sheet: roles','flex:1.2')) },
+        { n: 2, name: 'Full Screen', html: wfMobile(b('green-b','logo','flex:0.8') + b('cta-b','Seller','flex:0.4') + b('cta-b','Buyer','flex:0.4') + b('cta-b','Renter','flex:0.4')) },
+        { n: 3, name: 'Native List', html: wfMobile(nav() + b('cream-b','account rows','flex:3')) },
+        { n: 4, name: 'Gate Overlay', html: wfMobile(b('overlay-b','detail','flex:2') + b('cream-b','half sheet','flex:1.5')) },
+        { n: 5, name: 'Account Tab', html: wfMobile(nav() + b('sand-b','empty state','flex:2') + b('cta-b','Sign in','flex:0.4') + bottomNav()) }
+      ]},
+      { id: 'seller-listing-form-mobile', title: 'seller-listing-form-mobile', mobile: true, options: [
+        { n: 1, name: 'Stepper', html: wfMobile(nav() + b('muted-b','step 1/4','flex:0.3') + b('cream-b','type tiles','flex:2') + b('cta-b','Next','flex:0.35')) },
+        { n: 2, name: 'Long Form', html: wfMobile(nav() + b('cream-b','sections scroll','flex:3') + b('cta-b','Publish','flex:0.35')) },
+        { n: 3, name: 'FAB Save', html: wfMobile(nav() + b('cream-b','form','flex:3') + b('green-b','FAB ●','flex:0')) },
+        { n: 4, name: 'Type Grid', html: wfMobile(nav() + grid(2,2,'type') + b('cream-b','fields','flex:1.5')) },
+        { n: 5, name: 'Wizard Dots', html: wfMobile(b('muted-b','● ○ ○','flex:0.3') + b('cream-b','fields','flex:3')) }
+      ]},
+      { id: 'seeker-request-mobile', title: 'seeker-request-mobile', mobile: true, options: [
+        { n: 1, name: 'Sticky CTA', html: wfMobile(nav() + b('card-b','listing summary','flex:0.6') + b('cream-b','form','flex:2') + b('cta-b','Apply','flex:0.35')) },
+        { n: 2, name: 'Sheet', html: wfMobile(b('sand-b','detail','flex:2') + b('cream-b','half sheet','flex:1.5')) },
+        { n: 3, name: 'Full Page', html: wfMobile(b('brown-b','← Apply','flex:0.4') + b('cream-b','form','flex:3')) },
+        { n: 4, name: 'One Tap', html: wfMobile(nav() + b('sand-b','','flex:2') + b('cta-b','Apply?','flex:0.5')) },
+        { n: 5, name: 'Form + BG', html: wfMobile(nav() + b('cream-b','apply','flex:1.5') + b('green-soft-b','▼ BG accordion','flex:1')) }
+      ]},
+      { id: 'message-thread-mobile', title: 'message-thread-mobile', mobile: true, options: [
+        { n: 1, name: 'iMessage Style', html: wfMobile(nav() + b('bubble-in','','flex:0.4') + b('bubble-out','','flex:0.4') + b('muted-b','composer','flex:0.35')) },
+        { n: 2, name: 'WhatsApp Green', html: wfMobile(b('green-b','header','flex:0.4') + b('cream-b','chat','flex:3') + b('muted-b','input','flex:0.35')) },
+        { n: 3, name: 'Listing Context', html: wfMobile(b('card-b','listing pin','flex:0.5') + b('sand-b','messages','flex:2.5') + b('muted-b','input','flex:0.35')) },
+        { n: 4, name: 'Minimal', html: wfMobile(nav() + b('muted-b','text lines','flex:3') + b('muted-b','[ ]','flex:0.35')) },
+        { n: 5, name: 'Full Bleed', html: wfMobile(b('sand-b','bubbles','flex:3') + b('brown-b','composer border','flex:0.4')) }
+      ]}
+    ];
+
+    const navEl = document.getElementById('nav');
+    navEl.innerHTML = '<h1>ummahHomes wireframes</h1><p>5 layout options per screen. Pick one per section.</p>';
+    navEl.innerHTML += '<div class="section">Web</div>';
+    screens.filter(s => !s.mobile).forEach(s => {
+      navEl.innerHTML += `<a href="#${s.id}">${s.id}</a>`;
+    });
+    navEl.innerHTML += '<div class="section">Mobile</div>';
+    screens.filter(s => s.mobile).forEach(s => {
+      navEl.innerHTML += `<a href="#${s.id}">${s.id}</a>`;
+    });
+
+    const container = document.getElementById('screens');
+    screens.forEach(screen => {
+      const sec = document.createElement('section');
+      sec.className = 'screen';
+      sec.id = screen.id;
+      sec.innerHTML = `<h2>${screen.title}</h2><p class="meta">${screen.mobile ? '390×844' : '1280×800'} wireframe · green/brown + video where noted</p><div class="options-row"></div>`;
+      const row = sec.querySelector('.options-row');
+      screen.options.forEach(opt => {
+        const card = document.createElement('div');
+        card.className = 'option-card';
+        card.dataset.screen = screen.id;
+        card.dataset.option = opt.n;
+        card.innerHTML = `<h3><span>Option ${opt.n}</span> — ${opt.name}</h3>${opt.html}<button type="button" class="pick-btn">Pick option ${opt.n}</button>`;
+        card.querySelector('.pick-btn').onclick = () => {
+          picks[screen.id] = { n: opt.n, name: opt.name };
+          document.querySelectorAll(`.option-card[data-screen="${screen.id}"]`).forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          renderPicks();
+        };
+        row.appendChild(card);
+      });
+      container.appendChild(sec);
+    });
+
+    function renderPicks() {
+      const keys = Object.keys(picks);
+      if (!keys.length) return;
+      document.getElementById('pick-list').textContent = keys.map(k => `${k}: option ${picks[k].n} (${picks[k].name})`).join(' · ');
+    }
+  </script>
+</body>
+</html>

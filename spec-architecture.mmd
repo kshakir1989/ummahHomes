@@ -1,0 +1,115 @@
+flowchart TB
+  subgraph governance["Governance"]
+    CON[".specify/memory/constitution.md v1.2.0"]
+    README["README.md"]
+    DIAG["spec-architecture.png"]
+    DIAG_SRC["spec-architecture.mmd"]
+    TPL["templates/spec-ui-design/"]
+  end
+
+  subgraph tooling["Spec Kit tooling"]
+    EXT[".specify/extensions/ assess + bug"]
+    OVERLAY[".specify/workflows/overlays/speckit/assess-first.yml"]
+    WF[".specify/workflows/speckit/workflow.yml"]
+    SKILLS[".cursor/skills/speckit-*"]
+    TEMPLATES[".specify/templates/"]
+    SCRIPTS[".specify/scripts/bash/"]
+    FEAT[".specify/feature.json"]
+  end
+
+  subgraph assess[".specify/assessments/ummah-homes/"]
+    INTAKE["intake.md"]
+    RESEARCH_A["research.md"]
+    PROBLEM["problem.md"]
+    CONCEPT["concept.md"]
+    DECISION["decision.md go"]
+  end
+
+  subgraph sdd["specs/001-owner-listing-demo/"]
+    SPEC["spec.md"]
+    CHECK["checklists/requirements.md"]
+    PLAN["plan.md"]
+    RES["research.md"]
+    DM["data-model.md"]
+    UIB["ui-behavior.md"]
+    UID["ui-design.md"]
+    CTR["contracts/"]
+    QS["quickstart.md"]
+    TASKS["tasks.md"]
+  end
+
+  subgraph uiux["UI/UX foundation Phase 2b"]
+    FIGMA["Figma design file"]
+    REVIEW["Review approved"]
+    THEME["src/ui/theme.ts"]
+  end
+
+  subgraph tests["Test stack locked"]
+    GHERKIN["features/*.feature Gherkin"]
+    PW["Playwright web"]
+    DETOX["Detox mobile"]
+    JEST["Jest domain store"]
+  end
+
+  subgraph impl["Implementation planned"]
+    WEB["Expo web demo"]
+    IOS["iOS demo local"]
+    AND["Android demo local"]
+    DATA["data/ seed 100/10/1"]
+    DOMAIN["src/domain DRY"]
+    ADMIN["Admin Seller Buyer Renter"]
+  end
+
+  TPL --> UID
+  CON --> INTAKE
+  CON --> SPEC
+  CON -->|"VI TDD VII DRY VIII Figma"| tests
+  README --> DIAG
+  DIAG_SRC --> DIAG
+  EXT --> assess
+  OVERLAY --> WF
+  WF --> assess
+  WF --> sdd
+  SKILLS --> assess
+  SKILLS --> sdd
+  TEMPLATES --> sdd
+  SCRIPTS --> sdd
+  FEAT --> sdd
+
+  INTAKE --> RESEARCH_A --> PROBLEM --> CONCEPT --> DECISION
+  DECISION -->|"go"| SPEC
+  SPEC --> CHECK
+  SPEC --> PLAN
+  PLAN --> RES
+  PLAN --> DM
+  PLAN --> UIB
+  PLAN --> UID
+  PLAN --> CTR
+  PLAN --> QS
+  PLAN --> TASKS
+  UIB --> UID
+  UID --> FIGMA
+  FIGMA --> REVIEW
+  REVIEW --> THEME
+  CTR --> GHERKIN
+  TASKS --> DOMAIN
+  TASKS --> FIGMA
+  REVIEW --> WEB
+  REVIEW --> IOS
+  REVIEW --> AND
+  TASKS --> DATA
+  TASKS --> ADMIN
+  TASKS --> tests
+  GHERKIN --> PW
+  GHERKIN --> DETOX
+  JEST --> DOMAIN
+  THEME --> WEB
+  PW --> WEB
+  DETOX --> IOS
+  DETOX --> AND
+  DOMAIN --> WEB
+  DATA --> WEB
+  WEB --> ADMIN
+
+  assess -.->|"update when artifacts change"| DIAG_SRC
+  sdd -.->|"update when artifacts change"| DIAG_SRC

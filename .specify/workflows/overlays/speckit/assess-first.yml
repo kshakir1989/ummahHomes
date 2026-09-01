@@ -1,0 +1,55 @@
+# Prepends the assess discovery track to the bundled speckit SDD cycle.
+# Each insert_before specify is applied in order, so the composed sequence is
+# intake → research → define → shape → decide → review-assess → specify → …
+id: assess-first
+extends: speckit
+priority: 10
+enabled: true
+edits:
+  - insert_before: specify
+    step:
+      id: assess-intake
+      command: speckit.assess.intake
+      integration: "{{ inputs.integration }}"
+      input:
+        args: "{{ inputs.spec }}"
+
+  - insert_before: specify
+    step:
+      id: assess-research
+      command: speckit.assess.research
+      integration: "{{ inputs.integration }}"
+      input:
+        args: "{{ inputs.spec }}"
+
+  - insert_before: specify
+    step:
+      id: assess-define
+      command: speckit.assess.define
+      integration: "{{ inputs.integration }}"
+      input:
+        args: "{{ inputs.spec }}"
+
+  - insert_before: specify
+    step:
+      id: assess-shape
+      command: speckit.assess.shape
+      integration: "{{ inputs.integration }}"
+      input:
+        args: "{{ inputs.spec }}"
+
+  - insert_before: specify
+    step:
+      id: assess-decide
+      command: speckit.assess.decide
+      integration: "{{ inputs.integration }}"
+      input:
+        args: "{{ inputs.spec }}"
+
+  - insert_before: specify
+    step:
+      id: review-assess
+      type: gate
+      message: "Review the assessment (intake → research → define → shape → decide). Approve only for a go verdict. Reject if kill or needs-clarification."
+      options: [approve, reject]
+      on_reject: abort
