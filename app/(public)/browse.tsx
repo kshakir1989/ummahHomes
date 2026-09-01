@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { operations } from "@/domain/operations";
 import { Container, ListingCard, Screen } from "@/ui";
-import { colors, spacing } from "@/ui/theme";
+import { colors, spacing, typography } from "@/ui/theme";
 
 export default function BrowseScreen() {
   const router = useRouter();
@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
   },
   stripText: {
     color: colors.white,
-    fontSize: 18,
+    fontFamily: typography.familyDisplay,
+    fontSize: 20,
     fontWeight: "600",
   },
   list: {

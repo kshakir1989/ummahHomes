@@ -30,6 +30,16 @@ npm run ios          # after native prebuild
 npm run android
 ```
 
+### Themes
+
+Active preset is **`emarat`** (cool navy / blue-gray luxury palette). Restore stage-1 green/brown:
+
+```bash
+EXPO_PUBLIC_THEME=stage1 npm run web
+```
+
+Tokens live in `src/ui/theme.ts` (`emarat` | `stage1` presets).
+
 ## Tests
 
 ```bash

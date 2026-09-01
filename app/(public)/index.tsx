@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Container, Input, Screen } from "@/ui";
-import { colors, spacing } from "@/ui/theme";
+import { colors, spacing, typography } from "@/ui/theme";
 
 export default function EntryScreen() {
   return (
@@ -21,7 +21,12 @@ export default function EntryScreen() {
             <Button label="Search listings" testID="entry-search-submit" />
           </Link>
           <Link href="/sign-in" asChild>
-            <Button label="Sign in" variant="outline" testID="entry-sign-in" />
+            <Button
+              label="Sign in"
+              variant="outline"
+              onDark
+              testID="entry-sign-in"
+            />
           </Link>
         </Container>
       </View>
@@ -39,7 +44,8 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     color: colors.white,
-    fontSize: 24,
+    fontFamily: typography.familyDisplay,
+    fontSize: 28,
     fontWeight: "700",
     textAlign: "center",
     marginBottom: spacing.lg,
@@ -53,7 +59,9 @@ const styles = StyleSheet.create({
   },
   tab: {
     color: colors.white,
-    backgroundColor: colors.primary,
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: colors.blue,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: 999,
