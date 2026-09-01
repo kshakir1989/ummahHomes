@@ -6,7 +6,7 @@ import { colors, spacing } from "@/ui/theme";
 
 const ROLES = [
   { id: "user-1", label: "Seller", testID: "sign-in-role-seller" },
-  { id: "user-4", label: "Buyer", testID: "sign-in-role-buyer" },
+  { id: "user-7", label: "Buyer", testID: "sign-in-role-buyer" },
   { id: "user-9", label: "Renter", testID: "sign-in-role-renter" },
   { id: "user-admin", label: "Admin", testID: "sign-in-role-admin" },
 ] as const;
