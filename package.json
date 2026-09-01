@@ -31,7 +31,6 @@
     "@types/react": "~19.2.2",
     "detox": "^20.46.0",
     "jest": "^29.7.0",
-    "jest-expo": "~57.0.0",
     "playwright-bdd": "^9.2.0",
     "ts-jest": "^29.2.5",
     "typescript": "~6.0.3"
