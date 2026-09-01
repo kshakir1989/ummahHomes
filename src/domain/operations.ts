@@ -206,6 +206,7 @@ export const operations = {
     const session = getSession();
     if (
       listing.status !== ListingStatus.Published &&
+      listing.status !== ListingStatus.Booked &&
       (!session ||
         (listing.ownerId !== session.id && !hasRole(session, "admin")))
     ) {
