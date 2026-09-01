@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import {
   completeListingFeeStub,
   markListingBooked,
@@ -57,6 +56,13 @@ function assertOwnerOrAdmin(listing: Listing, user: User): void {
   }
 }
 
+let idCounter = 0;
+
+function nextId(prefix: string): string {
+  idCounter += 1;
+  return `${prefix}-${Date.now()}-${idCounter}`;
+}
+
 export const operations = {
   signIn,
   signOut,
@@ -76,7 +82,7 @@ export const operations = {
     }
     const now = new Date().toISOString();
     const listing: Listing = {
-      id: `listing-${randomUUID()}`,
+      id: nextId("listing"),
       ownerId: session.id,
       type: input.type,
       title: input.title ?? "",
@@ -223,7 +229,7 @@ export const operations = {
     }
     const now = new Date().toISOString();
     const request: ApplicationInterest = {
-      id: `request-${randomUUID()}`,
+      id: nextId("request"),
       listingId,
       seekerId: session.id,
       kind,
@@ -233,7 +239,7 @@ export const operations = {
       updatedAt: now,
     };
     const thread = {
-      id: `thread-${randomUUID()}`,
+      id: nextId("thread"),
       applicationInterestId: request.id,
       participantIds: [listing.ownerId, session.id],
     };
@@ -359,7 +365,7 @@ export const operations = {
       throw new DomainError("BG_REQUIRED");
     }
     const message = {
-      id: `message-${randomUUID()}`,
+      id: nextId("message"),
       threadId,
       senderId: session.id,
       body,
@@ -409,7 +415,7 @@ export const operations = {
         user.status = "suspended";
       }
       draft.adminActions.push({
-        id: `action-${randomUUID()}`,
+        id: nextId("action"),
         actorId: session.id,
         targetType: "user",
         targetId: id,
@@ -435,7 +441,7 @@ export const operations = {
     const listing = operations.markListingBooked(id);
     updateDemoState((draft) => {
       draft.adminActions.push({
-        id: `action-${randomUUID()}`,
+        id: nextId("action"),
         actorId: session.id,
         targetType: "listing",
         targetId: id,
