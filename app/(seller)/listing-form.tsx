@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
-import { operations } from "@/domain/operations";
+import { operations, DomainError } from "@/domain/operations";
 import type { ListingType } from "@/domain/types";
 import { Button, Container, Input, Screen } from "@/ui";
 import { colors, spacing } from "@/ui/theme";
@@ -22,6 +22,7 @@ export default function SellerListingFormScreen() {
   const [locationText, setLocationText] = useState("");
   const [price, setPrice] = useState("");
   const [showFeeStub, setShowFeeStub] = useState(false);
+  const [feeAcknowledged, setFeeAcknowledged] = useState(false);
   const [error, setError] = useState("");
 
   const ensureListing = () => {
@@ -58,23 +59,23 @@ export default function SellerListingFormScreen() {
       operations.publishListing(id);
       router.push("/browse");
     } catch (err) {
-      if (err instanceof Error && err.message.includes("FEE_REQUIRED")) {
+      if (err instanceof DomainError && err.code === "FEE_REQUIRED") {
         setShowFeeStub(true);
-      } else {
-        setError(err instanceof Error ? err.message : "Unable to publish");
+        return;
       }
+      setError(err instanceof Error ? err.message : "Unable to publish");
     }
   };
 
   const acknowledgeFee = () => {
-    if (!listingId) {
-      return;
-    }
-    operations.completeListingFeeStub(listingId);
+    const id = ensureListing();
+    operations.completeListingFeeStub(id);
+    setFeeAcknowledged(true);
     setShowFeeStub(false);
-    operations.publishListing(listingId);
-    router.push("/browse");
   };
+
+  const shouldShowFeeStub =
+    type === "home_sale" && (!feeAcknowledged || showFeeStub);
 
   return (
     <Screen testID="seller-listing-form">
@@ -119,7 +120,7 @@ export default function SellerListingFormScreen() {
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button label="Save draft" onPress={saveDraft} testID="seller-listing-form-save" />
         <Button label="Publish" onPress={publish} testID="seller-listing-form-publish" />
-        {showFeeStub ? (
+        {shouldShowFeeStub ? (
           <View style={styles.feeCard} testID="seller-fee-stub">
             <Text style={styles.feeTitle}>Listing fee (demo stub)</Text>
             <Text style={styles.feeCopy}>Acknowledge the demo listing fee to publish this sale.</Text>

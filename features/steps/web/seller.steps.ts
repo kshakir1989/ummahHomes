@@ -6,8 +6,11 @@ const { Given, When, Then } = createBdd();
 let lastListingTitle = "";
 
 Given("I am signed in as a seller", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => sessionStorage.clear());
   await page.goto("/sign-in");
   await page.getByTestId("sign-in-role-seller").click();
+  await page.waitForURL("**/browse");
 });
 
 const TYPE_LABELS: Record<string, string> = {
