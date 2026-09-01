@@ -1,7 +1,8 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { operations } from "@/domain/operations";
-import { ListingStatus, isSaleListing } from "@/domain/types";
+import { primarySeekerCtaLabel } from "@/domain/labels";
+import { ListingStatus } from "@/domain/types";
 import { getSession } from "@/store/session";
 import { Button, Container, Screen } from "@/ui";
 import { colors, spacing } from "@/ui/theme";
@@ -23,7 +24,7 @@ export default function ListingDetailScreen() {
   }
 
   const booked = listing.status === ListingStatus.Booked;
-  const ctaLabel = isSaleListing(listing.type) ? "Express interest" : "Apply";
+  const ctaLabel = primarySeekerCtaLabel(listing.type);
 
   const onPrimary = () => {
     if (!session) {

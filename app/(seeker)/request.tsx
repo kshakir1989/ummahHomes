@@ -2,7 +2,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { DomainError, operations } from "@/domain/operations";
-import { isSaleListing } from "@/domain/types";
+import { primarySeekerCtaLabel } from "@/domain/labels";
 import { getDemoState } from "@/store/demoStore";
 import { getSession } from "@/store/session";
 import { Button, Container, Input, Screen } from "@/ui";
@@ -33,7 +33,7 @@ export default function SeekerRequestScreen() {
     );
   }
 
-  const label = isSaleListing(listing.type) ? "Express interest" : "Apply";
+  const label = primarySeekerCtaLabel(listing.type);
 
   const submit = () => {
     setError("");

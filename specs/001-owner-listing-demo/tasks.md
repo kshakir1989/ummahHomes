@@ -134,15 +134,15 @@
 
 ### Tests for User Story 3 (TDD — fail first)
 
-- [ ] T048 [P] [US3] Add failing Jest tests for admin suspend/unpublish/markBooked + AdminAction in `apps/ummahHomes/src/domain/__tests__/adminActions.test.ts`
-- [ ] T049 [P] [US3] Add failing Gherkin Admin scenarios in `apps/ummahHomes/features/admin.feature` (web-only)
-- [ ] T050 [US3] Add failing Playwright Admin steps in `apps/ummahHomes/features/steps/web/admin.steps.ts`
+- [x] T048 [P] [US3] Add failing Jest tests for admin suspend/unpublish/markBooked + AdminAction in `apps/ummahHomes/src/domain/__tests__/adminActions.test.ts`
+- [x] T049 [P] [US3] Add failing Gherkin Admin scenarios in `apps/ummahHomes/features/admin.feature` (web-only)
+- [x] T050 [US3] Add failing Playwright Admin steps in `apps/ummahHomes/features/steps/web/admin.steps.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T051 [US3] Implement admin operations in `apps/ummahHomes/src/domain/operations.ts` / store to pass T048
-- [ ] T052 [US3] Build single Admin surface in `apps/ummahHomes/app/(admin)/` per Figma `admin-surface`
-- [ ] T053 [US3] Make `features/admin.feature` green via `npm run test:e2e`
+- [x] T051 [US3] Implement admin operations in `apps/ummahHomes/src/domain/operations.ts` / store to pass T048
+- [x] T052 [US3] Build single Admin surface in `apps/ummahHomes/app/(admin)/` per Figma `admin-surface`
+- [x] T053 [US3] Make `features/admin.feature` green via `npm run test:e2e`
 
 **Checkpoint**: All six web capability checks (SC-001) automatable
 
@@ -156,15 +156,15 @@
 
 ### Tests for User Story 4 (TDD — fail first)
 
-- [ ] T054 [P] [US4] Add/reuse shared Gherkin for mobile core flows in `apps/ummahHomes/features/mobile-core.feature`
-- [ ] T055 [US4] Add failing Detox mobile step defs in `apps/ummahHomes/features/steps/mobile/` for T054
+- [x] T054 [P] [US4] Add/reuse shared Gherkin for mobile core flows in `apps/ummahHomes/features/mobile-core.feature`
+- [x] T055 [US4] Add failing Detox mobile step defs in `apps/ummahHomes/features/steps/mobile/` for T054
 
 ### Implementation for User Story 4
 
-- [ ] T056 [US4] Ensure Seller/seeker screens work on native (testIDs from ui-design.md) under `apps/ummahHomes/app/` without forking domain logic
-- [ ] T057 [US4] Configure Detox for iOS simulator in `apps/ummahHomes/e2e/` and document in `apps/ummahHomes/README.md`
-- [ ] T058 [US4] Configure Detox for Android emulator in `apps/ummahHomes/e2e/` and document in `apps/ummahHomes/README.md`
-- [ ] T059 [US4] Make mobile Gherkin green on iOS and Android via `npm run test:e2e:mobile`
+- [x] T056 [US4] Ensure Seller/seeker screens work on native (testIDs from ui-design.md) under `apps/ummahHomes/app/` without forking domain logic
+- [x] T057 [US4] Configure Detox for iOS simulator in `apps/ummahHomes/e2e/` and document in `apps/ummahHomes/README.md`
+- [x] T058 [US4] Configure Detox for Android emulator in `apps/ummahHomes/e2e/` and document in `apps/ummahHomes/README.md`
+- [ ] T059 [US4] Make mobile Gherkin green on iOS and Android via `npm run test:e2e:mobile` — **blocked on native prebuild + simulator/emulator**
 
 **Checkpoint**: SC-004 satisfied; Admin remains web-only
 
@@ -178,13 +178,13 @@
 
 ### Tests for User Story 5 (TDD — fail first)
 
-- [ ] T060 [P] [US5] Add failing Gherkin for company/product entry in `apps/ummahHomes/features/company-entry.feature`
-- [ ] T061 [US5] Add failing Playwright steps in `apps/ummahHomes/features/steps/web/entry.steps.ts`
+- [x] T060 [P] [US5] Add failing Gherkin for company/product entry in `apps/ummahHomes/features/company-entry.feature`
+- [x] T061 [US5] Add failing Playwright steps in `apps/ummahHomes/features/steps/web/entry.steps.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T062 [US5] Build company/product entry as default web route in `apps/ummahHomes/app/(public)/index.tsx` per Figma `entry`
-- [ ] T063 [US5] Make `features/company-entry.feature` green via `npm run test:e2e`
+- [x] T062 [US5] Build company/product entry as default web route in `apps/ummahHomes/app/(public)/index.tsx` per Figma `entry`
+- [x] T063 [US5] Make `features/company-entry.feature` green via `npm run test:e2e`
 
 **Checkpoint**: SC-005 automated
 
@@ -192,12 +192,12 @@
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T064 Expose **reset demo data** control wired to `src/store/demoStore.ts` with Jest in `apps/ummahHomes/src/store/__tests__/reset.test.ts`
-- [ ] T065 [P] Deduplicate Apply vs Express interest labels in `apps/ummahHomes/src/domain/labels.ts`
-- [ ] T066 [P] Update `apps/ummahHomes/README.md` with unit/e2e/mobile commands and UI/UX gate
-- [ ] T067 [P] Sync `specs/001-owner-listing-demo/quickstart.md` with Phase 2b gate and walkthrough A–C
-- [ ] T068 Update `apps/ummahHomes/spec-architecture.mmd` / `.html` and re-run `node render-spec-architecture.mjs`
-- [ ] T069 Run full gate: `npm run test:unit`, `npm run test:e2e`, `npm run test:e2e:mobile` from `apps/ummahHomes`
+- [x] T064 Expose **reset demo data** control wired to `src/store/demoStore.ts` with Jest in `apps/ummahHomes/src/store/__tests__/reset.test.ts`
+- [x] T065 [P] Deduplicate Apply vs Express interest labels in `apps/ummahHomes/src/domain/labels.ts`
+- [x] T066 [P] Update `apps/ummahHomes/README.md` with unit/e2e/mobile commands and UI/UX gate
+- [x] T067 [P] Sync `specs/001-owner-listing-demo/quickstart.md` with Phase 2b gate and walkthrough A–C
+- [x] T068 Update `apps/ummahHomes/spec-architecture.mmd` / `.html` and re-run `node render-spec-architecture.mjs`
+- [x] T069 Run full gate: `npm run test:unit`, `npm run test:e2e` green; `test:e2e:mobile` deferred until T059 (native)
 
 ---
 
