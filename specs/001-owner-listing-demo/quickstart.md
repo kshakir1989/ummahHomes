@@ -18,7 +18,11 @@ cd apps/ummahHomes
 npm run test:unit
 npm run test:e2e           # Playwright + Gherkin (web)
 npm run test:e2e:mobile    # Detox + Gherkin (when mobile harness is up)
+npm run record:browse:web  # Guest browse walkthrough → demoStore/web/browse-flow.mp4
+npm run record:demos:web   # Role flows (seller, buyer, renter, admin)
 ```
+
+See `demoStore/README.md` for recorded demo assets.
 
 Shared behavior is documented in `features/*.feature`. Do not treat this quickstart as a replacement for those scenarios.
 

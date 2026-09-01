@@ -74,7 +74,12 @@ export function Button({
         animatedHover={false}
         disabled={disabled}
         panelStyle={[panelStyle, variant === "outline" && !onDark && styles.outlineLabelPanel]}
-        labelStyle={{ color: labelColor, ...(size === "large" ? styles.labelLarge : null) }}
+        labelStyle={{
+          color: labelColor,
+          textAlign: "center",
+          width: "100%",
+          ...(size === "large" ? styles.labelLarge : null),
+        }}
         style={style}
         {...rest}
       />
@@ -139,9 +144,13 @@ const styles = StyleSheet.create({
   label: {
     fontSize: typography.sizeBody,
     fontWeight: typography.weightMedium,
+    textAlign: "center",
+    width: "100%",
   },
   labelLarge: {
     fontSize: 32,
     fontWeight: typography.weightBold,
+    textAlign: "center",
+    width: "100%",
   },
 });

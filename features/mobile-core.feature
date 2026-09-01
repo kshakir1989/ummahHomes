@@ -24,10 +24,10 @@ Feature: Mobile core flows
     Then I land on seller dashboard on mobile
 
   @mobile
-  Scenario: Sign up routes renter to browse on mobile
+  Scenario: Sign up routes renter to renter dashboard on mobile
     Given the mobile app is launched
     When I sign up as a renter on mobile
-    Then I see listing cards on mobile
+    Then I land on renter dashboard on mobile
 
   @mobile
   Scenario: Browse filters open on mobile

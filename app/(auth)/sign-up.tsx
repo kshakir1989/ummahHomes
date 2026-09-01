@@ -1,7 +1,8 @@
 import { Link, useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { operations } from "@/domain/operations";
-import { homeRouteForUser } from "@/domain/authRoutes";
+import { signInSuccessRoute } from "@/domain/authRoutes";
+import { needsRolePicker } from "@/store/session";
 import { Button, Container, GlassButton, Screen } from "@/ui";
 import { colors, spacing } from "@/ui/theme";
 
@@ -29,7 +30,11 @@ export default function SignUpScreen() {
             style={styles.role}
             onPress={() => {
               const user = operations.signIn(role.id);
-              router.replace(homeRouteForUser(user));
+              if (needsRolePicker(user)) {
+                router.replace("/role-picker");
+                return;
+              }
+              router.replace(signInSuccessRoute(user));
             }}
           />
         ))}

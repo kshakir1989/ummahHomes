@@ -15,6 +15,7 @@ export interface ListingCardProps {
   onPress?: () => void;
   testID?: string;
   photoHeight?: number;
+  booked?: boolean;
 }
 
 export function ListingCard({
@@ -22,6 +23,7 @@ export function ListingCard({
   onPress,
   testID,
   photoHeight = 200,
+  booked = false,
 }: ListingCardProps) {
   const priceLabel =
     listing.type === "home_sale"
@@ -39,7 +41,14 @@ export function ListingCard({
       <View style={styles.body}>
         <View style={styles.row}>
           <Text style={styles.price}>{priceLabel}</Text>
-          <Text style={styles.badge}>{TYPE_LABELS[listing.type]}</Text>
+          <View style={styles.badgeRow}>
+            {booked ? (
+              <Text style={styles.bookedBadge} testID={`listing-booked-${listing.id}`}>
+                Booked
+              </Text>
+            ) : null}
+            <Text style={styles.badge}>{TYPE_LABELS[listing.type]}</Text>
+          </View>
         </View>
         <Text style={styles.title} numberOfLines={1}>
           {listing.title}
@@ -80,6 +89,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  badgeRow: {
+    flexDirection: "row",
+    gap: spacing.xs,
+    alignItems: "center",
+  },
+  bookedBadge: {
+    fontSize: typography.sizeSmall,
+    color: colors.white,
+    backgroundColor: colors.brownMid,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.chip,
+    overflow: "hidden",
+    fontWeight: typography.weightMedium,
   },
   price: {
     fontSize: typography.sizeHeading,

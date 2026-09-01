@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { operations } from "@/domain/operations";
 import { ListingStatus } from "@/domain/types";
@@ -11,6 +11,7 @@ const STATUS_LABEL: Record<ListingStatus, string> = {
   [ListingStatus.Draft]: "Draft",
   [ListingStatus.Published]: "Published",
   [ListingStatus.Booked]: "Booked",
+  [ListingStatus.Resolved]: "Resolved",
 };
 
 export default function SellerListingsScreen() {
@@ -25,6 +26,35 @@ export default function SellerListingsScreen() {
 
   void tick;
   const listings = operations.listMyListings();
+
+  const confirmDelete = (id: string, title: string) => {
+    const runDelete = () => {
+      operations.deleteListing(id);
+      setTick((n) => n + 1);
+    };
+    if (typeof Alert.alert === "function") {
+      Alert.alert(
+        "Delete listing?",
+        `Permanently delete "${title || "this listing"}"? This cannot be undone.`,
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Delete", style: "destructive", onPress: runDelete },
+        ],
+      );
+      return;
+    }
+    if (typeof globalThis.confirm === "function") {
+      if (
+        globalThis.confirm(
+          `Permanently delete "${title || "this listing"}"? This cannot be undone.`,
+        )
+      ) {
+        runDelete();
+      }
+      return;
+    }
+    runDelete();
+  };
 
   return (
     <Screen testID="seller-listings">
@@ -62,18 +92,35 @@ export default function SellerListingsScreen() {
                   <Button
                     label="Edit"
                     variant="outline"
-                    onPress={() =>
-                      router.push(`/listing-form?id=${item.id}`)
-                    }
+                    onPress={() => router.push(`/listing-form?id=${item.id}`)}
                     testID={`seller-listing-edit-${item.id}`}
                   />
+                  {item.status === ListingStatus.Published ? (
+                    <Button
+                      label="Unpublish"
+                      variant="outline"
+                      onPress={() => {
+                        operations.unpublishListing(item.id);
+                        setTick((n) => n + 1);
+                      }}
+                      testID={`seller-listing-unpublish-${item.id}`}
+                    />
+                  ) : null}
+                  {item.type === "home_sale" &&
+                  item.status === ListingStatus.Booked ? (
+                    <Button
+                      label="Resolve sale"
+                      onPress={() => {
+                        operations.resolveListingSale(item.id);
+                        setTick((n) => n + 1);
+                      }}
+                      testID={`seller-listing-resolve-${item.id}`}
+                    />
+                  ) : null}
                   <Button
                     label="Delete"
                     variant="secondary"
-                    onPress={() => {
-                      operations.deleteListing(item.id);
-                      setTick((n) => n + 1);
-                    }}
+                    onPress={() => confirmDelete(item.id, item.title)}
                     testID={`seller-listing-delete-${item.id}`}
                   />
                 </View>
@@ -135,6 +182,7 @@ const styles = StyleSheet.create({
   },
   actions: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: spacing.sm,
   },
 });

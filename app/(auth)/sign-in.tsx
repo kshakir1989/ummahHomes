@@ -1,12 +1,13 @@
-import { Text, View, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { operations } from "@/domain/operations";
-import { homeRouteForUser } from "@/domain/authRoutes";
-import { Button, Container, GlassButton, Screen } from "@/ui";
+import { signInSuccessRoute } from "@/domain/authRoutes";
+import { needsRolePicker } from "@/store/session";
+import { Button, Container, GlassButton, ScreenScroll } from "@/ui";
 import { colors, spacing } from "@/ui/theme";
 
 const ROLES = [
-  { id: "user-1", label: "Seller", testID: "sign-in-role-seller" },
+  { id: "user-1", label: "Seller + Buyer", testID: "sign-in-role-seller" },
   { id: "user-7", label: "Buyer", testID: "sign-in-role-buyer" },
   { id: "user-9", label: "Renter", testID: "sign-in-role-renter" },
   { id: "user-admin", label: "Admin", testID: "sign-in-role-admin" },
@@ -14,9 +15,22 @@ const ROLES = [
 
 export default function SignInScreen() {
   const router = useRouter();
+  const { returnTo } = useLocalSearchParams<{ returnTo?: string }>();
+
+  const onSignIn = (userId: string) => {
+    const user = operations.signIn(userId);
+    if (needsRolePicker(user)) {
+      const pickerPath = returnTo
+        ? `/role-picker?returnTo=${encodeURIComponent(returnTo)}`
+        : "/role-picker";
+      router.replace(pickerPath as never);
+      return;
+    }
+    router.replace(signInSuccessRoute(user, returnTo) as never);
+  };
 
   return (
-    <Screen testID="sign-in">
+    <ScreenScroll testID="sign-in" contentContainerStyle={styles.scroll}>
       <Container>
         <Text style={styles.title}>Continue as demo user</Text>
         {ROLES.map((role) => (
@@ -25,19 +39,19 @@ export default function SignInScreen() {
             testID={role.testID}
             label={role.label}
             style={styles.role}
-            onPress={() => {
-              const user = operations.signIn(role.id);
-              router.replace(homeRouteForUser(user));
-            }}
+            onPress={() => onSignIn(role.id)}
           />
         ))}
         <Button label="Back to browse" onPress={() => router.push("/browse")} />
       </Container>
-    </Screen>
+    </ScreenScroll>
   );
 }
 
 const styles = StyleSheet.create({
+  scroll: {
+    flexGrow: 1,
+  },
   title: {
     fontSize: 20,
     fontWeight: "700",

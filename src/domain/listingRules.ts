@@ -42,6 +42,20 @@ export function markListingBooked(listing: Listing): Listing {
   };
 }
 
+export function resolveListingSale(listing: Listing): Listing {
+  if (listing.type !== "home_sale") {
+    throw new Error("RESOLVE_SALE_ONLY");
+  }
+  if (listing.status !== ListingStatus.Booked) {
+    throw new Error("RESOLVE_REQUIRES_BOOKED");
+  }
+  return {
+    ...listing,
+    status: ListingStatus.Resolved,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 export function unpublishListing(listing: Listing): Listing {
   return {
     ...listing,
@@ -60,4 +74,9 @@ export function publishListing(listing: Listing): Listing {
     status: ListingStatus.Published,
     updatedAt: new Date().toISOString(),
   };
+}
+
+export function syncListingHeroImage(listing: Listing): Listing {
+  const hero = listing.imageUrls[0] ?? listing.imageUrl;
+  return { ...listing, imageUrl: hero };
 }

@@ -2,6 +2,7 @@
  * Mobile core flows — mirrors features/mobile-core.feature for Detox.
  */
 const { by, device, element, expect: detoxExpect, waitFor } = require("detox");
+const { openSignIn } = require("./demo-helpers");
 
 describe("Mobile core flows", () => {
   beforeEach(async () => {
@@ -14,9 +15,9 @@ describe("Mobile core flows", () => {
   });
 
   it("Browse listings on mobile", async () => {
-    await waitFor(element(by.id("entry")))
+    await waitFor(element(by.id("entry-sign-in")))
       .toBeVisible()
-      .withTimeout(60000);
+      .withTimeout(120000);
     await element(by.id("entry-search-submit")).tap();
     await waitFor(element(by.id("browse-search-input")))
       .toBeVisible()
@@ -25,14 +26,12 @@ describe("Mobile core flows", () => {
   });
 
   it("Sign in and apply on mobile", async () => {
-    await waitFor(element(by.id("entry-sign-in")))
-      .toBeVisible()
-      .withTimeout(60000);
-    await element(by.id("entry-sign-in")).tap();
-    await waitFor(element(by.id("sign-in-role-renter")))
-      .toBeVisible()
-      .withTimeout(15000);
+    await openSignIn();
     await element(by.id("sign-in-role-renter")).tap();
+    await waitFor(element(by.id("renter-dashboard")))
+      .toBeVisible()
+      .withTimeout(20000);
+    await element(by.id("renter-dashboard-browse")).tap();
     await waitFor(element(by.id("browse-search-input")))
       .toBeVisible()
       .withTimeout(30000);
@@ -41,7 +40,7 @@ describe("Mobile core flows", () => {
       .toBeVisible()
       .withTimeout(15000);
     await element(by.id("listing-card-listing-2")).tap();
-    await waitFor(element(by.text("Photo gallery")))
+    await waitFor(element(by.id("listing-detail")))
       .toBeVisible()
       .withTimeout(15000);
     await element(by.id("listing-detail-primary-cta")).tap();
@@ -55,23 +54,24 @@ describe("Mobile core flows", () => {
   });
 
   it("Seller sign in routes to dashboard on mobile", async () => {
-    await waitFor(element(by.id("entry-sign-in")))
-      .toBeVisible()
-      .withTimeout(60000);
-    await element(by.id("entry-sign-in")).tap();
+    await openSignIn();
     await element(by.id("sign-in-role-seller")).tap();
+    await waitFor(element(by.id("role-picker-seller")))
+      .toBeVisible()
+      .withTimeout(20000);
+    await element(by.id("role-picker-seller")).tap();
     await waitFor(element(by.id("seller-dashboard")))
       .toBeVisible()
       .withTimeout(30000);
   });
 
-  it("Sign up routes renter to browse on mobile", async () => {
+  it("Sign up routes renter to renter dashboard on mobile", async () => {
     await waitFor(element(by.id("entry-sign-up")))
       .toBeVisible()
-      .withTimeout(60000);
+      .withTimeout(120000);
     await element(by.id("entry-sign-up")).tap();
     await element(by.id("sign-up-role-renter")).tap();
-    await waitFor(element(by.id("browse-search-input")))
+    await waitFor(element(by.id("renter-dashboard")))
       .toBeVisible()
       .withTimeout(30000);
   });

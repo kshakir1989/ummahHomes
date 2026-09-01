@@ -6,14 +6,45 @@ const { Given, When, Then } = createBdd();
 async function signInAs(page: import("@playwright/test").Page, testId: string) {
   await page.goto("/sign-in");
   await page.getByTestId(testId).click();
-  await page.waitForURL("**/browse");
+  await page.waitForURL(
+    (url) =>
+      !url.pathname.includes("/sign-in") &&
+      (url.pathname.includes("/browse") ||
+        url.pathname.includes("/dashboard") ||
+        url.pathname.includes("/buyer-dashboard") ||
+        url.pathname.includes("/renter-dashboard") ||
+        url.pathname.includes("/admin") ||
+        url.pathname.includes("/role-picker")),
+  );
 }
 
-async function signInAsUserId(page: import("@playwright/test").Page, userId: string) {
+const DEMO_STATE_KEY = "ummahHomes.demoState.v5";
+
+async function signInAsUserId(
+  page: import("@playwright/test").Page,
+  userId: string,
+  activeRole?: "seller" | "buyer" | "renter" | "admin",
+) {
   await page.goto("/browse");
-  await page.evaluate((id) => {
-    sessionStorage.setItem("ummahHomes.demoSessionUserId", id);
-  }, userId);
+  await page.evaluate(
+    ({ id, role }) => {
+      sessionStorage.setItem("ummahHomes.demoSessionUserId", id);
+      if (role) {
+        sessionStorage.setItem("ummahHomes.demoActiveRole", role);
+      } else {
+        sessionStorage.removeItem("ummahHomes.demoActiveRole");
+      }
+    },
+    { id: userId, role: activeRole },
+  );
+  if (activeRole === "seller") {
+    await page.goto("/dashboard");
+    await expect(page.getByTestId("seller-dashboard")).toBeVisible({
+      timeout: 15000,
+    });
+    return;
+  }
+  await page.reload();
 }
 
 Given("I am signed in as a renter", async ({ page }) => {
@@ -41,8 +72,8 @@ When("I submit an express interest request", async ({ page }) => {
 });
 
 Then("the seller can see my submitted request", async ({ page }) => {
-  const ownerId = await page.evaluate(() => {
-    const raw = sessionStorage.getItem("ummahHomes.demoState");
+  const ownerId = await page.evaluate((stateKey) => {
+    const raw = sessionStorage.getItem(stateKey);
     if (!raw) return null;
     const state = JSON.parse(raw) as {
       requests: { listingId: string }[];
@@ -51,9 +82,9 @@ Then("the seller can see my submitted request", async ({ page }) => {
     const request = state.requests[state.requests.length - 1];
     const listing = state.listings.find((l) => l.id === request.listingId);
     return listing?.ownerId ?? null;
-  });
+  }, DEMO_STATE_KEY);
   expect(ownerId).toBeTruthy();
-  await signInAsUserId(page, ownerId!);
+  await signInAsUserId(page, ownerId!, "seller");
   await page.goto("/requests");
   await expect(page.getByTestId("seller-requests")).toBeVisible();
   await expect(page.getByText("submitted").first()).toBeVisible();
@@ -73,15 +104,15 @@ Given("two renters have open requests on the same listing", async ({ page }) => 
 });
 
 When("the seller accepts the first request", async ({ page }) => {
-  const ownerId = await page.evaluate(() => {
-    const raw = sessionStorage.getItem("ummahHomes.demoState");
+  const ownerId = await page.evaluate((stateKey) => {
+    const raw = sessionStorage.getItem(stateKey);
     if (!raw) return null;
     const state = JSON.parse(raw) as {
       listings: { id: string; ownerId: string }[];
     };
     return state.listings.find((l) => l.id === "listing-2")?.ownerId ?? null;
-  });
-  await signInAsUserId(page, ownerId!);
+  }, DEMO_STATE_KEY);
+  await signInAsUserId(page, ownerId!, "seller");
   await page.goto("/requests");
   await page.getByTestId("seller-request-accept").first().click();
 });
@@ -105,10 +136,12 @@ When("I start and pass the background check stub", async ({ page }) => {
   await expect(page.getByTestId("seeker-bg-stub")).toBeVisible();
   await page.getByTestId("seeker-bg-stub-start").click();
   await page.getByTestId("seeker-bg-stub-pass").click();
+  await expect(page.getByTestId("message-thread")).toBeVisible({
+    timeout: 15000,
+  });
 });
 
 Then("I can send a message to the seller", async ({ page }) => {
-  await page.goto("/messages");
   await page.getByTestId("message-thread-input").fill("Hello from e2e");
   await page.getByTestId("message-thread-send").click();
   await expect(page.getByText("Hello from e2e")).toBeVisible();
@@ -128,16 +161,17 @@ Given("a renter has an open request on a listing", async ({ page }) => {
 });
 
 When("the seller marks the listing booked", async ({ page }) => {
-  const ownerId = await page.evaluate(() => {
-    const raw = sessionStorage.getItem("ummahHomes.demoState");
+  const ownerId = await page.evaluate((stateKey) => {
+    const raw = sessionStorage.getItem(stateKey);
     if (!raw) return null;
     const state = JSON.parse(raw) as {
       listings: { id: string; ownerId: string }[];
     };
     return state.listings.find((l) => l.id === "listing-2")?.ownerId ?? null;
-  });
-  await signInAsUserId(page, ownerId!);
+  }, DEMO_STATE_KEY);
+  await signInAsUserId(page, ownerId!, "seller");
   await page.goto("/listing-form?book=listing-2");
+  await expect(page.getByTestId("seller-listing-form")).toBeVisible();
   await page.getByTestId("seller-mark-booked").click();
 });
 

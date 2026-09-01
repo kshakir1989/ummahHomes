@@ -14,6 +14,7 @@ export enum ListingStatus {
   Draft = "draft",
   Published = "published",
   Booked = "booked",
+  Resolved = "resolved",
 }
 
 export enum RequestKind {
@@ -59,7 +60,9 @@ export interface Listing {
   price: number;
   currency: "USD";
   status: ListingStatus;
+  /** Hero image — first entry in `imageUrls`. */
   imageUrl: string;
+  imageUrls: string[];
   amenities: string[];
   requiresBackgroundCheck: boolean;
   listingFeeCompleted: boolean;
@@ -73,6 +76,8 @@ export interface ApplicationInterest {
   seekerId: string;
   kind: RequestKind;
   status: RequestStatus;
+  /** Seller may require BG per application (rent only). */
+  backgroundCheckRequired: boolean;
   backgroundCheckStatus: BgStubStatus | null;
   createdAt: string;
   updatedAt: string;

@@ -22,6 +22,9 @@ const baseListing = (): Listing => ({
   currency: "USD",
   status: ListingStatus.Draft,
   imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85",
+  imageUrls: [
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85",
+  ],
   amenities: ["Central AC"],
   requiresBackgroundCheck: false,
   listingFeeCompleted: false,

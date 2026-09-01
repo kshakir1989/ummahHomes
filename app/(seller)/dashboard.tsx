@@ -66,6 +66,20 @@ export default function SellerDashboardScreen() {
             onPress={() => router.push("/requests")}
             testID="seller-dashboard-requests"
           />
+          <Button
+            label="Messages"
+            variant="outline"
+            onPress={() => router.push("/seller-inbox")}
+            testID="seller-dashboard-inbox"
+          />
+          {hasRole(session, "buyer") ? (
+            <Button
+              label="My interests"
+              variant="outline"
+              onPress={() => router.push("/my-interests")}
+              testID="seller-dashboard-buyer-link"
+            />
+          ) : null}
         </View>
       </Container>
     </Screen>

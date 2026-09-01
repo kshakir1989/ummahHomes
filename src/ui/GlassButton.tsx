@@ -23,6 +23,8 @@ export interface GlassButtonProps extends Omit<PressableProps, "children"> {
   tone?: GlassTone;
   active?: boolean;
   compact?: boolean;
+  shrink?: boolean;
+  fillWidth?: boolean;
   uppercase?: boolean;
   animatedHover?: boolean;
   panelStyle?: StyleProp<ViewStyle>;
@@ -34,6 +36,8 @@ export function GlassButton({
   tone = "onLight",
   active = false,
   compact = false,
+  shrink = false,
+  fillWidth = false,
   uppercase = false,
   animatedHover = true,
   disabled,
@@ -85,21 +89,28 @@ export function GlassButton({
       onHoverOut={() => animateTo(0)}
       onPressIn={() => animateTo(1)}
       onPressOut={() => animateTo(0)}
-      style={[disabled && styles.disabled, style]}
+      style={[fillWidth && styles.fillWidth, shrink && styles.shrink, disabled && styles.disabled, style]}
       {...rest}
     >
       <Animated.View
         style={[
           resolvedPanel,
+          fillWidth && styles.panelFillWidth,
+          shrink && styles.panelShrink,
           animatedHover && {
             transform: [{ scale }, { translateY }],
           },
         ]}
       >
         <Text
+          adjustsFontSizeToFit={shrink || fillWidth}
+          minimumFontScale={shrink || fillWidth ? 0.72 : undefined}
+          numberOfLines={shrink || fillWidth ? 1 : undefined}
           style={[
             styles.label,
             compact && styles.labelCompact,
+            shrink && styles.labelShrink,
+            fillWidth && styles.labelFillWidth,
             uppercase && styles.uppercase,
             { color: resolvedLabelColor },
             labelStyle,
@@ -139,12 +150,39 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
   },
+  shrink: {
+    flexShrink: 1,
+    minWidth: 0,
+  },
+  fillWidth: {
+    alignSelf: "stretch",
+    width: "100%",
+  },
+  panelFillWidth: {
+    width: "100%",
+  },
+  panelShrink: {
+    minHeight: 34,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    maxWidth: "100%",
+  },
   label: {
     fontSize: typography.sizeBody,
     fontWeight: typography.weightMedium,
+    textAlign: "center",
   },
   labelCompact: {
     fontSize: typography.sizeSmall,
+    textAlign: "center",
+  },
+  labelShrink: {
+    fontSize: 11,
+    textAlign: "center",
+  },
+  labelFillWidth: {
+    width: "100%",
+    textAlign: "center",
   },
   uppercase: {
     letterSpacing: 1.5,

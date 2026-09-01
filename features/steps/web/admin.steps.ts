@@ -8,7 +8,7 @@ Given("I am signed in as an admin", async ({ page }) => {
   await page.evaluate(() => sessionStorage.clear());
   await page.goto("/sign-in");
   await page.getByTestId("sign-in-role-admin").click();
-  await page.waitForURL("**/browse");
+  await page.waitForURL("**/admin");
 });
 
 When("I open the admin surface", async ({ page }) => {

@@ -46,6 +46,7 @@ describe("seed invariants", () => {
       expect(listing.imageUrl).toContain("q=85");
       expect(allowedImages.has(listing.imageUrl)).toBe(true);
       expect(listing.amenities.length).toBeGreaterThanOrEqual(3);
+      expect(listing.imageUrls.length).toBeGreaterThanOrEqual(3);
     }
   });
 });

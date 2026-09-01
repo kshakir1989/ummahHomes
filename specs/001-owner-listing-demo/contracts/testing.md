@@ -44,6 +44,10 @@ cd apps/ummahHomes
 npm run test:unit          # Jest
 npm run test:e2e           # Playwright + Gherkin (web)
 npm run test:e2e:mobile    # Detox + Gherkin (iOS/Android as configured)
+npm run record:browse:web  # Guest browse walkthrough → demoStore/web/browse-flow.mp4
+npm run record:browse:ios  # Same flow on iOS simulator
+npm run record:demos:web   # Role flows (seller, buyer, renter, admin)
+npm run record:demos:ios
 ```
 
 ## Non-goals

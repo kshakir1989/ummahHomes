@@ -7,12 +7,13 @@ import {
 } from "../src/domain/types";
 import {
   listingAmenities,
+  listingImageGallery,
   listingImageUrl,
   listingLocation,
   listingTitle,
 } from "./listing-catalog";
 
-export const SEED_VERSION = 4;
+export const SEED_VERSION = 5;
 
 export const LISTING_TYPES: ListingType[] = [
   "home_sale",
@@ -91,6 +92,7 @@ export function buildSeedData(): SeedData {
     const isSale = type === "home_sale";
     const location = listingLocation(i - 1);
     const amenities = listingAmenities(i);
+    const gallery = listingImageGallery(i - 1);
     listings.push({
       id: `listing-${i}`,
       ownerId: owner.id,
@@ -104,7 +106,8 @@ export function buildSeedData(): SeedData {
       price: isSale ? 285000 + i * 2200 : 950 + (i % 14) * 75,
       currency: "USD",
       status: ListingStatus.Published,
-      imageUrl: listingImageUrl(i - 1),
+      imageUrl: gallery[0],
+      imageUrls: gallery,
       amenities,
       requiresBackgroundCheck: i % 5 === 0,
       listingFeeCompleted: isSale,

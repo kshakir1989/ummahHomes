@@ -31,6 +31,7 @@ export interface BrowseSearchBarProps {
   columnsPerRow: BrowseColumnsPerRow;
   onColumnsPerRowChange: (columns: BrowseColumnsPerRow) => void;
   filtersExpanded: boolean;
+  buyerMode?: boolean;
 }
 
 export function BrowseSearchBar({
@@ -40,6 +41,7 @@ export function BrowseSearchBar({
   columnsPerRow,
   onColumnsPerRowChange,
   filtersExpanded,
+  buyerMode = false,
 }: BrowseSearchBarProps) {
   const [panelMounted, setPanelMounted] = useState(filtersExpanded);
   const expandAnim = useRef(new Animated.Value(0)).current;
@@ -122,6 +124,8 @@ export function BrowseSearchBar({
           testID="browse-filters-panel"
         >
           <View style={styles.panel}>
+          {!buyerMode ? (
+            <>
           <Text style={styles.sectionLabel}>Listing type</Text>
           <View style={styles.chipRow}>
             {LISTING_TYPE_FILTER_OPTIONS.map((option) => {
@@ -141,6 +145,8 @@ export function BrowseSearchBar({
               );
             })}
           </View>
+            </>
+          ) : null}
 
           <Text style={styles.sectionLabel}>City</Text>
           <View style={styles.chipRow}>
@@ -214,7 +220,8 @@ export function BrowseSearchBar({
       ) : null}
 
       <Text style={styles.resultCount}>
-        {resultCount} {resultCount === 1 ? "home" : "homes"} in Atlanta metro
+        {resultCount} {resultCount === 1 ? "home" : "homes"}
+        {buyerMode ? " for sale in Atlanta metro" : " in Atlanta metro"}
       </Text>
     </View>
   );
@@ -263,6 +270,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.chip,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
+    alignItems: "center",
+    justifyContent: "center",
     ...glassPanelOnLightStyle,
   },
   chipActive: {
@@ -271,6 +280,7 @@ const styles = StyleSheet.create({
   chipText: {
     color: colors.primary,
     fontSize: typography.sizeSmall,
+    textAlign: "center",
   },
   chipTextActive: {
     color: colors.white,

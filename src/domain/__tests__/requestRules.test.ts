@@ -22,6 +22,9 @@ const listing = (): Listing => ({
   currency: "USD",
   status: ListingStatus.Published,
   imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85",
+  imageUrls: [
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85",
+  ],
   amenities: ["Central AC"],
   requiresBackgroundCheck: false,
   listingFeeCompleted: false,
@@ -35,6 +38,7 @@ const request = (): ApplicationInterest => ({
   seekerId: "u2",
   kind: RequestKind.Apply,
   status: RequestStatus.Submitted,
+  backgroundCheckRequired: false,
   backgroundCheckStatus: null,
   createdAt: "2026-01-01T00:00:00.000Z",
   updatedAt: "2026-01-01T00:00:00.000Z",

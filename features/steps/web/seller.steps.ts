@@ -10,22 +10,19 @@ Given("I am signed in as a seller", async ({ page }) => {
   await page.evaluate(() => sessionStorage.clear());
   await page.goto("/sign-in");
   await page.getByTestId("sign-in-role-seller").click();
+  const picker = page.getByTestId("role-picker");
+  if (await picker.isVisible().catch(() => false)) {
+    await page.getByTestId("role-picker-seller").click();
+  }
   await page.waitForURL("**/dashboard");
 });
-
-const TYPE_LABELS: Record<string, string> = {
-  home_sale: "Sale",
-  home_rent: "Home rent",
-  room_rent: "Room",
-  basement_rent: "Basement",
-};
 
 When(
   "I create a {string} listing with required details",
   async ({ page }, listingType: string) => {
     lastListingTitle = `E2E ${listingType} ${Date.now()}`;
     await page.goto("/listing-form");
-    await page.getByText(TYPE_LABELS[listingType] ?? listingType).click();
+    await page.getByTestId(`seller-listing-form-type-${listingType}`).click();
     await page.getByTestId("seller-listing-form-title").fill(lastListingTitle);
     await page
       .getByTestId("seller-listing-form-description")
@@ -42,6 +39,9 @@ When("I complete the listing fee stub", async ({ page }) => {
 
 When("I publish the listing", async ({ page }) => {
   await page.getByTestId("seller-listing-form-publish").click();
+  await expect(page.getByTestId("seller-listings")).toBeVisible({
+    timeout: 15000,
+  });
 });
 
 When("I attempt to publish the listing", async ({ page }) => {
@@ -49,7 +49,13 @@ When("I attempt to publish the listing", async ({ page }) => {
 });
 
 Then("the listing appears in public browse", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    sessionStorage.removeItem("ummahHomes.demoSessionUserId");
+    sessionStorage.removeItem("ummahHomes.demoActiveRole");
+  });
   await page.goto("/browse");
+  await page.getByTestId("browse-search-input").fill(lastListingTitle);
   await expect(page.getByText(lastListingTitle)).toBeVisible();
 });
 

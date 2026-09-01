@@ -36,6 +36,10 @@ When("I sign in as demo role {string}", async ({ page }, role: string) => {
     throw new Error(`Unknown demo role: ${role}`);
   }
   await page.getByTestId(testID).click();
+  const picker = page.getByTestId("role-picker");
+  if (await picker.isVisible().catch(() => false)) {
+    await page.getByTestId(`role-picker-${role}`).click();
+  }
 });
 
 When("I sign up as demo role {string}", async ({ page }, role: string) => {
@@ -48,4 +52,16 @@ When("I sign up as demo role {string}", async ({ page }, role: string) => {
 
 Then("I land on the seller dashboard", async ({ page }) => {
   await expect(page.getByTestId("seller-dashboard")).toBeVisible();
+});
+
+Then("I land on the buyer dashboard", async ({ page }) => {
+  await expect(page.getByTestId("buyer-dashboard")).toBeVisible();
+});
+
+Then("I land on the renter dashboard", async ({ page }) => {
+  await expect(page.getByTestId("renter-dashboard")).toBeVisible();
+});
+
+Then("I land on public browse", async ({ page }) => {
+  await expect(page.getByTestId("browse")).toBeVisible();
 });

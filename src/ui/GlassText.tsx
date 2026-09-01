@@ -1,21 +1,47 @@
-import { StyleSheet, Text, View, type ViewProps } from "react-native";
+import { StyleSheet, Text, View, type TextStyle, type ViewProps, type ViewStyle } from "react-native";
 import { glassPanelStyle } from "./glass";
 import { colors, radius, spacing, typography } from "./theme";
 
 export interface GlassTextProps extends ViewProps {
   children: string;
   variant?: "brand" | "discover" | "link";
+  compact?: boolean;
+  brandFontSize?: number;
+  brandLetterSpacing?: number;
 }
 
 export function GlassText({
   children,
   variant = "link",
+  compact = false,
+  brandFontSize,
+  brandLetterSpacing,
   style,
   ...rest
 }: GlassTextProps) {
+  const brandPanelStyle: ViewStyle | undefined =
+    variant === "brand" && compact ? styles.brandCompactPanel : undefined;
+  const brandTextStyle: TextStyle | undefined =
+    variant === "brand"
+      ? {
+          fontSize: brandFontSize ?? (compact ? 13 : 18),
+          letterSpacing: brandLetterSpacing ?? (compact ? 2.5 : 4),
+        }
+      : undefined;
+
   return (
-    <View style={[styles.base, glassPanelStyle, styles[variant], style]} {...rest}>
-      <Text style={[styles.text, styles[`${variant}Text`]]}>{children}</Text>
+    <View
+      style={[styles.base, glassPanelStyle, styles[variant], brandPanelStyle, style]}
+      {...rest}
+    >
+      <Text
+        adjustsFontSizeToFit={variant === "brand"}
+        minimumFontScale={variant === "brand" ? 0.72 : undefined}
+        numberOfLines={variant === "brand" ? 1 : undefined}
+        style={[styles.text, styles[`${variant}Text`], brandTextStyle]}
+      >
+        {children}
+      </Text>
     </View>
   );
 }
@@ -29,6 +55,12 @@ const styles = StyleSheet.create({
   brand: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
+    maxWidth: "100%",
+  },
+  brandCompactPanel: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    alignSelf: "center",
   },
   discover: {
     paddingHorizontal: spacing.lg,
@@ -48,6 +80,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: typography.weightBold,
     letterSpacing: 4,
+    textAlign: "center",
   },
   discoverText: {
     fontSize: 17,

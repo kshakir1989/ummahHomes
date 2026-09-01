@@ -112,6 +112,15 @@ export function listingImageUrl(index: number): string {
   return LISTING_IMAGE_URLS[index % LISTING_IMAGE_URLS.length];
 }
 
+/** Three curated photos per listing for browse hero + detail gallery. */
+export function listingImageGallery(index: number): string[] {
+  return [
+    listingImageUrl(index),
+    LISTING_IMAGE_URLS[(index + 1) % LISTING_IMAGE_URLS.length],
+    LISTING_IMAGE_URLS[(index + 3) % LISTING_IMAGE_URLS.length],
+  ];
+}
+
 export function listingTitle(type: string, index: number): string {
   const pool =
     type === "home_sale"

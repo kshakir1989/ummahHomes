@@ -14,10 +14,6 @@ When("I tap search listings", async ({ page }) => {
   await page.getByTestId("entry-search-submit").click();
 });
 
-Then("I land on public browse", async ({ page }) => {
-  await expect(page.getByTestId("browse")).toBeVisible();
-});
-
 When("I tap sign in from entry", async ({ page }) => {
   await page.getByTestId("entry-sign-in").click();
 });

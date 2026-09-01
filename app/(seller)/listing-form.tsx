@@ -2,16 +2,24 @@ import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { operations, DomainError } from "@/domain/operations";
-import type { ListingType } from "@/domain/types";
+import { ListingStatus, type ListingType } from "@/domain/types";
+import { isRentListing } from "@/domain/types";
 import { getSession, hasRole } from "@/store/session";
-import { Button, Container, Input, Screen } from "@/ui";
+import { listingImageGallery } from "../../data/listing-catalog";
+import {
+  Button,
+  Container,
+  Input,
+  ListingPhotoEditor,
+  ScreenScroll,
+} from "@/ui";
 import { colors, spacing } from "@/ui/theme";
 
 const TYPES: { value: ListingType; label: string }[] = [
-  { value: "home_sale", label: "Sale" },
-  { value: "home_rent", label: "Home rent" },
-  { value: "room_rent", label: "Room" },
-  { value: "basement_rent", label: "Basement" },
+  { value: "home_sale", label: "House for Sale" },
+  { value: "home_rent", label: "House for Rent" },
+  { value: "room_rent", label: "Room for Rent" },
+  { value: "basement_rent", label: "Basement for Rent" },
 ];
 
 export default function SellerListingFormScreen() {
@@ -25,10 +33,13 @@ export default function SellerListingFormScreen() {
   const [description, setDescription] = useState("");
   const [locationText, setLocationText] = useState("");
   const [price, setPrice] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>(listingImageGallery(0));
+  const [requiresBackgroundCheck, setRequiresBackgroundCheck] = useState(false);
+  const [status, setStatus] = useState<ListingStatus>(ListingStatus.Draft);
   const [showFeeStub, setShowFeeStub] = useState(false);
   const [feeAcknowledged, setFeeAcknowledged] = useState(false);
   const [error, setError] = useState("");
-  const [bookedNote, setBookedNote] = useState("");
+  const [note, setNote] = useState("");
 
   useEffect(() => {
     if (!editId) {
@@ -41,6 +52,11 @@ export default function SellerListingFormScreen() {
       setDescription(listing.description);
       setLocationText(listing.locationText);
       setPrice(String(listing.price));
+      setImageUrls(
+        listing.imageUrls?.length ? listing.imageUrls : [listing.imageUrl],
+      );
+      setRequiresBackgroundCheck(listing.requiresBackgroundCheck);
+      setStatus(listing.status);
       setFeeAcknowledged(listing.listingFeeCompleted);
     } catch {
       setError("Listing not found");
@@ -58,32 +74,34 @@ export default function SellerListingFormScreen() {
     }
     const created = operations.createListing({ type });
     setListingId(created.id);
+    setImageUrls(created.imageUrls);
     return created.id;
   };
 
-  const saveDraft = () => {
-    const id = ensureListing();
-    operations.updateListing(id, {
+  const persistFields = (targetId: string) => {
+    operations.updateListing(targetId, {
       type,
       title,
       description,
       locationText,
       price: Number(price),
+      imageUrls,
+      requiresBackgroundCheck: isRentListing(type) ? requiresBackgroundCheck : false,
     });
+  };
+
+  const saveDraft = () => {
+    const targetId = ensureListing();
+    persistFields(targetId);
+    setNote("Draft saved");
   };
 
   const publish = () => {
     setError("");
     try {
-      const id = ensureListing();
-      operations.updateListing(id, {
-        type,
-        title,
-        description,
-        locationText,
-        price: Number(price),
-      });
-      operations.publishListing(id);
+      const targetId = ensureListing();
+      persistFields(targetId);
+      operations.publishListing(targetId);
       router.replace("/listings");
     } catch (err) {
       if (err instanceof DomainError && err.code === "FEE_REQUIRED") {
@@ -95,8 +113,8 @@ export default function SellerListingFormScreen() {
   };
 
   const acknowledgeFee = () => {
-    const id = ensureListing();
-    operations.completeListingFeeStub(id);
+    const targetId = ensureListing();
+    operations.completeListingFeeStub(targetId);
     setFeeAcknowledged(true);
     setShowFeeStub(false);
   };
@@ -104,14 +122,29 @@ export default function SellerListingFormScreen() {
   const markBooked = () => {
     if (!listingId) return;
     operations.markListingBooked(listingId);
-    setBookedNote("Listing marked booked");
+    setStatus(ListingStatus.Booked);
+    setNote("Listing marked booked");
+  };
+
+  const resolveSale = () => {
+    if (!listingId) return;
+    operations.resolveListingSale(listingId);
+    setStatus(ListingStatus.Resolved);
+    setNote("Sale resolved — removed from public browse");
+  };
+
+  const unpublish = () => {
+    if (!listingId) return;
+    operations.unpublishListing(listingId);
+    setStatus(ListingStatus.Draft);
+    setNote("Listing unpublished");
   };
 
   const shouldShowFeeStub =
     type === "home_sale" && (!feeAcknowledged || showFeeStub);
 
   return (
-    <Screen testID="seller-listing-form">
+    <ScreenScroll testID="seller-listing-form">
       <Container>
         <Text style={styles.heading}>List your home</Text>
         <View style={styles.typeRow}>
@@ -125,6 +158,7 @@ export default function SellerListingFormScreen() {
             />
           ))}
         </View>
+        <ListingPhotoEditor imageUrls={imageUrls} onChange={setImageUrls} />
         <Input
           label="Title"
           value={title}
@@ -150,8 +184,26 @@ export default function SellerListingFormScreen() {
           keyboardType="numeric"
           testID="seller-listing-form-price"
         />
+        {isRentListing(type) ? (
+          <Button
+            label={
+              requiresBackgroundCheck
+                ? "Background check: required for new applications"
+                : "Background check: off"
+            }
+            variant={requiresBackgroundCheck ? "primary" : "outline"}
+            onPress={() => {
+              const next = !requiresBackgroundCheck;
+              setRequiresBackgroundCheck(next);
+              if (listingId) {
+                operations.setListingBackgroundCheck(listingId, next);
+              }
+            }}
+            testID="seller-listing-form-bg-toggle"
+          />
+        ) : null}
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        {bookedNote ? <Text style={styles.booked}>{bookedNote}</Text> : null}
+        {note ? <Text style={styles.note}>{note}</Text> : null}
         <Button
           label="Save draft"
           onPress={saveDraft}
@@ -162,12 +214,30 @@ export default function SellerListingFormScreen() {
           onPress={publish}
           testID="seller-listing-form-publish"
         />
+        {listingId && status === ListingStatus.Published ? (
+          <Button
+            label="Unpublish"
+            variant="outline"
+            onPress={unpublish}
+            testID="seller-listing-unpublish"
+          />
+        ) : null}
         {listingId ? (
           <Button
             label="Mark booked"
             variant="secondary"
             onPress={markBooked}
             testID="seller-mark-booked"
+          />
+        ) : null}
+        {listingId &&
+        type === "home_sale" &&
+        status === ListingStatus.Booked ? (
+          <Button
+            label="Resolve sale"
+            variant="primary"
+            onPress={resolveSale}
+            testID="seller-resolve-sale"
           />
         ) : null}
         {shouldShowFeeStub ? (
@@ -184,7 +254,7 @@ export default function SellerListingFormScreen() {
           </View>
         ) : null}
       </Container>
-    </Screen>
+    </ScreenScroll>
   );
 }
 
@@ -205,7 +275,7 @@ const styles = StyleSheet.create({
     color: colors.danger,
     marginVertical: spacing.sm,
   },
-  booked: {
+  note: {
     color: colors.primary,
     marginVertical: spacing.sm,
   },

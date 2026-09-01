@@ -2,11 +2,13 @@ import { useRef } from "react";
 import {
   Animated,
   Image,
+  Platform,
   StyleSheet,
   Text,
   View,
   useWindowDimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   MARKETING_COMMUNITY_IMAGE,
   MARKETING_DRONE_NEIGHBORHOOD,
@@ -14,6 +16,7 @@ import {
   MARKETING_SAFE_HOME_IMAGE,
 } from "../../data/listing-catalog";
 import { Container, GlassNavLink, GlassText, HeroDiscoverNav, PillarCard, Screen } from "@/ui";
+import { HERO_NAV_STACK_WIDTH } from "@/ui/heroNav";
 import { colors, layout, spacing, typography } from "@/ui/theme";
 
 const HERO_MIN_HEIGHT = 520;
@@ -34,8 +37,24 @@ const PILLARS = [
   },
 ] as const;
 
+function brandScale(width: number) {
+  if (width < 340) {
+    return { fontSize: 11, letterSpacing: 1.5 };
+  }
+  if (width < 390) {
+    return { fontSize: 12, letterSpacing: 2 };
+  }
+  if (width < 768) {
+    return { fontSize: 14, letterSpacing: 2.5 };
+  }
+  return { fontSize: 18, letterSpacing: 4 };
+}
+
 export default function EntryScreen() {
-  const { height: windowHeight } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const compactTopBar = Platform.OS === "ios" || windowWidth < 768;
+  const brandMetrics = brandScale(windowWidth);
   const heroHeight = Math.max(HERO_MIN_HEIGHT, Math.round(windowHeight * 0.82));
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -54,6 +73,7 @@ export default function EntryScreen() {
   return (
     <Screen testID="entry" style={styles.screen}>
       <Animated.ScrollView
+        testID="entry-scroll"
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -77,10 +97,33 @@ export default function EntryScreen() {
           <Animated.View
             style={[styles.heroOverlay, { opacity: overlayOpacity }]}
           />
-          <View style={styles.topBar}>
-            <GlassText variant="brand" testID="entry-brand">
-              UMMAH HOMES
-            </GlassText>
+          <View
+            style={[
+              styles.topBar,
+              { paddingTop: insets.top + spacing.sm },
+            ]}
+          >
+            <View
+              style={styles.brandOverlay}
+              pointerEvents="box-none"
+            >
+              <GlassText
+                variant="brand"
+                testID="entry-brand"
+                compact={compactTopBar}
+                brandFontSize={brandMetrics.fontSize}
+                brandLetterSpacing={brandMetrics.letterSpacing}
+                style={[
+                  styles.brandBadge,
+                  {
+                    maxWidth:
+                      windowWidth - spacing.md * 2 - HERO_NAV_STACK_WIDTH - spacing.sm,
+                  },
+                ]}
+              >
+                UMMAH HOMES
+              </GlassText>
+            </View>
             <HeroDiscoverNav />
           </View>
           <View style={styles.heroCopy}>
@@ -218,10 +261,18 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 2,
     flexDirection: "row",
+    justifyContent: "flex-end",
     alignItems: "flex-start",
-    justifyContent: "space-between",
-    paddingTop: spacing.md,
     paddingHorizontal: spacing.md,
+  },
+  brandOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingHorizontal: spacing.md + HERO_NAV_STACK_WIDTH,
+  },
+  brandBadge: {
+    maxWidth: "100%",
   },
   heroCopy: {
     zIndex: 2,

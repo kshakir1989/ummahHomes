@@ -1,46 +1,91 @@
 import { StyleSheet, Text, View } from "react-native";
 import type { Message } from "../domain/types";
-import { colors, spacing } from "./theme";
+import { colors, spacing, typography } from "./theme";
 
-export interface MessageThreadProps {
+export interface MessageThreadViewProps {
   messages: Message[];
-  currentUserId?: string;
+  currentUserId: string;
+  senderName: (senderId: string) => string;
 }
 
-export function MessageThreadView({ messages, currentUserId }: MessageThreadProps) {
+export function MessageThreadView({
+  messages,
+  currentUserId,
+  senderName,
+}: MessageThreadViewProps) {
   return (
-    <View>
-      {messages.map((message) => (
-        <View
-          key={message.id}
-          style={[
-            styles.bubble,
-            message.senderId === currentUserId ? styles.sent : styles.received,
-          ]}
-        >
-          <Text style={styles.body}>{message.body}</Text>
-        </View>
-      ))}
+    <View style={styles.thread}>
+      {messages.map((message) => {
+        const isMine = message.senderId === currentUserId;
+        const label = isMine ? "You" : senderName(message.senderId);
+
+        return (
+          <View
+            key={message.id}
+            style={[styles.row, isMine ? styles.rowMine : styles.rowOther]}
+            testID={`message-bubble-${message.id}`}
+          >
+            <Text style={[styles.meta, isMine && styles.metaMine]}>{label}</Text>
+            <View style={[styles.bubble, isMine ? styles.sent : styles.received]}>
+              <Text style={[styles.body, isMine && styles.bodyMine]}>
+                {message.body}
+              </Text>
+            </View>
+          </View>
+        );
+      })}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  thread: {
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  row: {
+    width: "50%",
+    maxWidth: "50%",
+    gap: spacing.xs,
+  },
+  rowMine: {
+    alignSelf: "flex-end",
+    alignItems: "flex-end",
+  },
+  rowOther: {
+    alignSelf: "flex-start",
+    alignItems: "flex-start",
+  },
+  meta: {
+    fontSize: typography.sizeSmall,
+    color: colors.textMuted,
+    fontWeight: typography.weightMedium,
+  },
+  metaMine: {
+    color: colors.brownMid,
+  },
   bubble: {
-    borderRadius: 12,
-    padding: spacing.sm,
-    marginBottom: spacing.sm,
-    maxWidth: "85%",
+    width: "100%",
+    borderRadius: 16,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   sent: {
-    alignSelf: "flex-end",
     backgroundColor: colors.primary,
+    borderBottomRightRadius: spacing.xs,
   },
   received: {
-    alignSelf: "flex-start",
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.brownWarm,
+    borderBottomLeftRadius: spacing.xs,
   },
-  body: { color: colors.text },
+  body: {
+    color: colors.text,
+    fontSize: typography.sizeBody,
+    lineHeight: 22,
+  },
+  bodyMine: {
+    color: colors.white,
+  },
 });

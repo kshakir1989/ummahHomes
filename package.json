@@ -13,12 +13,17 @@
     "test:e2e:mobile": "detox test -c ios.sim.debug",
     "test:e2e:mobile:build": "detox build -c ios.sim.debug",
     "test:e2e:mobile:android": "detox test -c android.emu.debug",
+    "record:demos:web": "node demo/record-web.mjs",
+    "record:demos:ios": "bash demo/record-ios.sh",
+    "record:browse:web": "node demo/record-browse.mjs",
+    "record:browse:ios": "bash demo/record-browse-ios.sh",
     "prebuild:native": "npx expo prebuild --clean"
   },
   "dependencies": {
     "@expo/metro-runtime": "~57.0.11",
     "expo": "~57.0.14",
     "expo-constants": "~57.0.16",
+    "expo-image-picker": "~57.0.14",
     "expo-linking": "~57.0.8",
     "expo-router": "~57.0.17",
     "expo-status-bar": "~57.0.1",

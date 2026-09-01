@@ -6,8 +6,12 @@ export default function SellerLayout() {
     <Stack screenOptions={stackWithHomeNav}>
       <Stack.Screen name="dashboard" options={{ ...stackWithSignOut(), title: "" }} />
       <Stack.Screen name="listings" options={{ ...stackWithBackNav("/dashboard"), title: "" }} />
-      <Stack.Screen name="listing-form" options={{ title: "" }} />
-      <Stack.Screen name="requests" options={{ title: "" }} />
+      <Stack.Screen name="listing-form" options={{ ...stackWithBackNav("/listings"), title: "" }} />
+      <Stack.Screen name="requests" options={{ ...stackWithBackNav("/dashboard"), title: "" }} />
+      <Stack.Screen
+        name="seller-inbox"
+        options={{ ...stackWithBackNav("/dashboard"), title: "" }}
+      />
     </Stack>
   );
 }

@@ -2,6 +2,7 @@ import {
   BgStubStatus,
   ListingStatus,
   RequestStatus,
+  isRentListing,
   type ApplicationInterest,
   type Listing,
 } from "./types";
@@ -56,7 +57,10 @@ export function isBackgroundCheckBlocking(
   listing: Listing,
   request: ApplicationInterest,
 ): boolean {
-  if (!listing.requiresBackgroundCheck) {
+  if (!request.backgroundCheckRequired) {
+    return false;
+  }
+  if (!isRentListing(listing.type)) {
     return false;
   }
   const status = request.backgroundCheckStatus;
