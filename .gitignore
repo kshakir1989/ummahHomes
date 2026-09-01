@@ -1,0 +1,14 @@
+node_modules/
+.expo/
+dist/
+web-build/
+.features-gen/
+playwright-report/
+test-results/
+blob-report/
+coverage/
+*.log
+.DS_Store
+ios/
+android/
+.detoxrc.json
