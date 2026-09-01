@@ -105,22 +105,22 @@
 
 ### Tests for User Story 2 (TDD — fail first)
 
-- [ ] T035 [P] [US2] Add failing Jest tests for createRequest kind-by-type, multi-open, markBooked→unavailable, BG stub gates in `apps/ummahHomes/src/domain/__tests__/seekerRequests.test.ts`
-- [ ] T036 [P] [US2] Add failing Jest tests for message thread send/list in `apps/ummahHomes/src/domain/__tests__/messaging.test.ts`
-- [ ] T037 [P] [US2] Add failing Gherkin for public browse + auth gate in `apps/ummahHomes/features/browse-auth.feature`
-- [ ] T038 [P] [US2] Add failing Gherkin for Apply / Express interest / accept / multi-open in `apps/ummahHomes/features/seeker-requests.feature`
-- [ ] T039 [P] [US2] Add failing Gherkin for BG stub + messaging + booked in `apps/ummahHomes/features/vet-message-booked.feature`
-- [ ] T040 [US2] Add failing Playwright web steps for T037–T039 in `apps/ummahHomes/features/steps/web/seeker.steps.ts` and `apps/ummahHomes/features/steps/web/browse.steps.ts`
+- [x] T035 [P] [US2] Add failing Jest tests for createRequest kind-by-type, multi-open, markBooked→unavailable, BG stub gates in `apps/ummahHomes/src/domain/__tests__/seekerRequests.test.ts`
+- [x] T036 [P] [US2] Add failing Jest tests for message thread send/list in `apps/ummahHomes/src/domain/__tests__/messaging.test.ts`
+- [x] T037 [P] [US2] Add failing Gherkin for public browse + auth gate in `apps/ummahHomes/features/browse-auth.feature`
+- [x] T038 [P] [US2] Add failing Gherkin for Apply / Express interest / accept / multi-open in `apps/ummahHomes/features/seeker-requests.feature`
+- [x] T039 [P] [US2] Add failing Gherkin for BG stub + messaging + booked in `apps/ummahHomes/features/vet-message-booked.feature`
+- [x] T040 [US2] Add failing Playwright web steps for T037–T039 in `apps/ummahHomes/features/steps/web/seeker.steps.ts` and `apps/ummahHomes/features/steps/web/browse.steps.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T041 [US2] Implement request, BG stub, booked cascade, and messaging operations to pass T035–T036 in `apps/ummahHomes/src/domain/` and `apps/ummahHomes/src/store/`
-- [ ] T042 [US2] Build browse + listing detail screens in `apps/ummahHomes/app/(public)/` per Figma `browse` + `listing-detail`
-- [ ] T043 [US2] Build demo sign-in picker/gate in `apps/ummahHomes/app/(auth)/` per Figma `sign-in`
-- [ ] T044 [US2] Build seeker Apply / Express interest + Seller accept/deny UI per Figma `seeker-request` + `seller-requests`
-- [ ] T045 [US2] Build message thread UI per Figma `message-thread` using shared thread component in `apps/ummahHomes/src/ui/`
-- [ ] T046 [US2] Implement Seller/Admin mark-booked control on listing manage views in `apps/ummahHomes/app/(seller)/`
-- [ ] T047 [US2] Make web Gherkin features T037–T039 green via `npm run test:e2e`
+- [x] T041 [US2] Implement request, BG stub, booked cascade, and messaging operations to pass T035–T036 in `apps/ummahHomes/src/domain/` and `apps/ummahHomes/src/store/`
+- [x] T042 [US2] Build browse + listing detail screens in `apps/ummahHomes/app/(public)/` per Figma `browse` + `listing-detail`
+- [x] T043 [US2] Build demo sign-in picker/gate in `apps/ummahHomes/app/(auth)/` per Figma `sign-in`
+- [x] T044 [US2] Build seeker Apply / Express interest + Seller accept/deny UI per Figma `seeker-request` + `seller-requests`
+- [x] T045 [US2] Build message thread UI per Figma `message-thread` using shared thread component in `apps/ummahHomes/src/ui/`
+- [x] T046 [US2] Implement Seller/Admin mark-booked control on listing manage views in `apps/ummahHomes/app/(seller)/`
+- [x] T047 [US2] Make web Gherkin features T037–T039 green via `npm run test:e2e`
 
 **Checkpoint**: US1+US2 web flows cover five of six capability checks (Admin still US3)
 
