@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { operations, DomainError } from "@/domain/operations";
 import type { ListingType } from "@/domain/types";
@@ -15,7 +15,10 @@ const TYPES: { value: ListingType; label: string }[] = [
 
 export default function SellerListingFormScreen() {
   const router = useRouter();
-  const [listingId, setListingId] = useState<string | null>(null);
+  const { book } = useLocalSearchParams<{ book?: string }>();
+  const [listingId, setListingId] = useState<string | null>(
+    book ? String(book) : null,
+  );
   const [type, setType] = useState<ListingType>("home_rent");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -24,6 +27,7 @@ export default function SellerListingFormScreen() {
   const [showFeeStub, setShowFeeStub] = useState(false);
   const [feeAcknowledged, setFeeAcknowledged] = useState(false);
   const [error, setError] = useState("");
+  const [bookedNote, setBookedNote] = useState("");
 
   const ensureListing = () => {
     if (listingId) {
@@ -74,6 +78,12 @@ export default function SellerListingFormScreen() {
     setShowFeeStub(false);
   };
 
+  const markBooked = () => {
+    if (!listingId) return;
+    operations.markListingBooked(listingId);
+    setBookedNote("Listing marked booked");
+  };
+
   const shouldShowFeeStub =
     type === "home_sale" && (!feeAcknowledged || showFeeStub);
 
@@ -118,12 +128,31 @@ export default function SellerListingFormScreen() {
           testID="seller-listing-form-price"
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        <Button label="Save draft" onPress={saveDraft} testID="seller-listing-form-save" />
-        <Button label="Publish" onPress={publish} testID="seller-listing-form-publish" />
+        {bookedNote ? <Text style={styles.booked}>{bookedNote}</Text> : null}
+        <Button
+          label="Save draft"
+          onPress={saveDraft}
+          testID="seller-listing-form-save"
+        />
+        <Button
+          label="Publish"
+          onPress={publish}
+          testID="seller-listing-form-publish"
+        />
+        {listingId ? (
+          <Button
+            label="Mark booked"
+            variant="secondary"
+            onPress={markBooked}
+            testID="seller-mark-booked"
+          />
+        ) : null}
         {shouldShowFeeStub ? (
           <View style={styles.feeCard} testID="seller-fee-stub">
             <Text style={styles.feeTitle}>Listing fee (demo stub)</Text>
-            <Text style={styles.feeCopy}>Acknowledge the demo listing fee to publish this sale.</Text>
+            <Text style={styles.feeCopy}>
+              Acknowledge the demo listing fee to publish this sale.
+            </Text>
             <Button
               label="Acknowledge & continue"
               onPress={acknowledgeFee}
@@ -151,6 +180,10 @@ const styles = StyleSheet.create({
   },
   error: {
     color: colors.danger,
+    marginVertical: spacing.sm,
+  },
+  booked: {
+    color: colors.primary,
     marginVertical: spacing.sm,
   },
   feeCard: {
