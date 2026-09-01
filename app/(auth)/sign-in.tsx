@@ -1,7 +1,8 @@
-import { Text, View, Pressable, StyleSheet } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { operations } from "@/domain/operations";
-import { Button, Container, Screen } from "@/ui";
+import { homeRouteForUser } from "@/domain/authRoutes";
+import { Button, Container, GlassButton, Screen } from "@/ui";
 import { colors, spacing } from "@/ui/theme";
 
 const ROLES = [
@@ -19,17 +20,16 @@ export default function SignInScreen() {
       <Container>
         <Text style={styles.title}>Continue as demo user</Text>
         {ROLES.map((role) => (
-          <Pressable
+          <GlassButton
             key={role.id}
             testID={role.testID}
-            onPress={() => {
-              operations.signIn(role.id);
-              router.replace("/browse");
-            }}
+            label={role.label}
             style={styles.role}
-          >
-            <Text style={styles.roleText}>{role.label}</Text>
-          </Pressable>
+            onPress={() => {
+              const user = operations.signIn(role.id);
+              router.replace(homeRouteForUser(user));
+            }}
+          />
         ))}
         <Button label="Back to browse" onPress={() => router.push("/browse")} />
       </Container>
@@ -45,15 +45,6 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   role: {
-    backgroundColor: colors.surface,
-    padding: spacing.md,
-    borderRadius: 12,
     marginBottom: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.brownWarm,
-  },
-  roleText: {
-    color: colors.text,
-    fontSize: 16,
   },
 });

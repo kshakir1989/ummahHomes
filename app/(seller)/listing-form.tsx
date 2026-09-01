@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { operations, DomainError } from "@/domain/operations";
 import type { ListingType } from "@/domain/types";
+import { getSession, hasRole } from "@/store/session";
 import { Button, Container, Input, Screen } from "@/ui";
 import { colors, spacing } from "@/ui/theme";
 
@@ -15,10 +16,10 @@ const TYPES: { value: ListingType; label: string }[] = [
 
 export default function SellerListingFormScreen() {
   const router = useRouter();
-  const { book } = useLocalSearchParams<{ book?: string }>();
-  const [listingId, setListingId] = useState<string | null>(
-    book ? String(book) : null,
-  );
+  const { book, id } = useLocalSearchParams<{ book?: string; id?: string }>();
+  const session = getSession();
+  const editId = id ? String(id) : book ? String(book) : null;
+  const [listingId, setListingId] = useState<string | null>(editId);
   const [type, setType] = useState<ListingType>("home_rent");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -28,6 +29,28 @@ export default function SellerListingFormScreen() {
   const [feeAcknowledged, setFeeAcknowledged] = useState(false);
   const [error, setError] = useState("");
   const [bookedNote, setBookedNote] = useState("");
+
+  useEffect(() => {
+    if (!editId) {
+      return;
+    }
+    try {
+      const listing = operations.getListing(editId);
+      setType(listing.type);
+      setTitle(listing.title);
+      setDescription(listing.description);
+      setLocationText(listing.locationText);
+      setPrice(String(listing.price));
+      setFeeAcknowledged(listing.listingFeeCompleted);
+    } catch {
+      setError("Listing not found");
+    }
+  }, [editId]);
+
+  if (!session || !hasRole(session, "seller")) {
+    router.replace("/sign-in");
+    return null;
+  }
 
   const ensureListing = () => {
     if (listingId) {
@@ -61,7 +84,7 @@ export default function SellerListingFormScreen() {
         price: Number(price),
       });
       operations.publishListing(id);
-      router.push("/browse");
+      router.replace("/listings");
     } catch (err) {
       if (err instanceof DomainError && err.code === "FEE_REQUIRED") {
         setShowFeeStub(true);

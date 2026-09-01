@@ -4,8 +4,11 @@ import { defineBddConfig } from "playwright-bdd";
 const testDir = defineBddConfig({
   features: [
     "features/admin.feature",
+    "features/auth-routing.feature",
     "features/browse-auth.feature",
+    "features/browse-filters.feature",
     "features/company-entry.feature",
+    "features/home-marketing.feature",
     "features/seeker-requests.feature",
     "features/seller-listings.feature",
     "features/vet-message-booked.feature",

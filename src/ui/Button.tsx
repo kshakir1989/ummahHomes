@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import {
+  Animated,
   Pressable,
   StyleSheet,
   Text,
@@ -6,6 +8,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
+import { GlassButton, glassVariantPanel } from "./GlassButton";
 import { colors, radius, spacing, typography } from "./theme";
 
 type ButtonVariant = "primary" | "secondary" | "outline";
@@ -13,8 +16,10 @@ type ButtonVariant = "primary" | "secondary" | "outline";
 export interface ButtonProps extends PressableProps {
   label: string;
   variant?: ButtonVariant;
-  /** Outline on dark surfaces (hero): light border + label */
+  /** Glass styling for dark hero surfaces */
   onDark?: boolean;
+  animatedHover?: boolean;
+  size?: "default" | "large";
   style?: StyleProp<ViewStyle>;
 }
 
@@ -22,33 +27,89 @@ export function Button({
   label,
   variant = "primary",
   onDark = false,
+  animatedHover = true,
+  size = "default",
   style,
   disabled,
   ...rest
 }: ButtonProps) {
+  const hoverAnim = useRef(new Animated.Value(0)).current;
+
+  const animateTo = (value: number) => {
+    if (!animatedHover || disabled) {
+      return;
+    }
+    Animated.spring(hoverAnim, {
+      toValue: value,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 5,
+    }).start();
+  };
+
+  const scale = hoverAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.04],
+  });
+
+  const translateY = hoverAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -3],
+  });
+
+  const panelStyle = [
+    styles.base,
+    size === "large" && styles.baseLarge,
+    glassVariantPanel(variant, onDark),
+  ];
+
+  const labelColor =
+    variant === "outline" && !onDark ? colors.primary : colors.white;
+
+  if (!animatedHover) {
+    return (
+      <GlassButton
+        label={label}
+        tone={onDark ? "onDark" : "onLight"}
+        animatedHover={false}
+        disabled={disabled}
+        panelStyle={[panelStyle, variant === "outline" && !onDark && styles.outlineLabelPanel]}
+        labelStyle={{ color: labelColor, ...(size === "large" ? styles.labelLarge : null) }}
+        style={style}
+        {...rest}
+      />
+    );
+  }
+
   return (
     <Pressable
       accessibilityRole="button"
       disabled={disabled}
-      style={({ pressed }) => [
-        styles.base,
-        styles[variant],
-        variant === "outline" && onDark && styles.outlineOnDark,
-        disabled && styles.disabled,
-        pressed && !disabled && styles.pressed,
-        style,
-      ]}
+      onHoverIn={() => animateTo(1)}
+      onHoverOut={() => animateTo(0)}
+      onPressIn={() => animateTo(1)}
+      onPressOut={() => animateTo(0)}
+      style={[disabled && styles.disabled, style]}
       {...rest}
     >
-      <Text
+      <Animated.View
         style={[
-          styles.label,
-          styles[`${variant}Label` as const],
-          variant === "outline" && onDark && styles.outlineOnDarkLabel,
+          panelStyle,
+          {
+            transform: [{ scale }, { translateY }],
+          },
         ]}
       >
-        {label}
-      </Text>
+        <Text
+          style={[
+            styles.label,
+            size === "large" && styles.labelLarge,
+            { color: labelColor },
+          ]}
+        >
+          {label}
+        </Text>
+      </Animated.View>
     </Pressable>
   );
 }
@@ -62,40 +123,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  primary: {
-    backgroundColor: colors.primary,
+  baseLarge: {
+    minHeight: 88,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.lg,
+    borderRadius: radius.card,
+    alignSelf: "flex-start",
   },
-  secondary: {
-    backgroundColor: colors.brownDeep,
-  },
-  outline: {
-    backgroundColor: "transparent",
-    borderWidth: 1,
-    borderColor: colors.brownWarm,
-  },
-  outlineOnDark: {
-    borderColor: colors.blue,
+  outlineLabelPanel: {
+    backgroundColor: "rgba(255, 255, 255, 0.72)",
   },
   disabled: {
     opacity: 0.5,
-  },
-  pressed: {
-    opacity: 0.9,
   },
   label: {
     fontSize: typography.sizeBody,
     fontWeight: typography.weightMedium,
   },
-  primaryLabel: {
-    color: colors.white,
-  },
-  secondaryLabel: {
-    color: colors.white,
-  },
-  outlineLabel: {
-    color: colors.brownDeep,
-  },
-  outlineOnDarkLabel: {
-    color: colors.white,
+  labelLarge: {
+    fontSize: 32,
+    fontWeight: typography.weightBold,
   },
 });

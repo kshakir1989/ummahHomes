@@ -10,7 +10,7 @@ Given("I am signed in as a seller", async ({ page }) => {
   await page.evaluate(() => sessionStorage.clear());
   await page.goto("/sign-in");
   await page.getByTestId("sign-in-role-seller").click();
-  await page.waitForURL("**/browse");
+  await page.waitForURL("**/dashboard");
 });
 
 const TYPE_LABELS: Record<string, string> = {

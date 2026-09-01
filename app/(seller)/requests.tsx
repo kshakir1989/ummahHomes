@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { operations } from "@/domain/operations";
 import { getDemoState } from "@/store/demoStore";
-import { getSession } from "@/store/session";
+import { getSession, hasRole } from "@/store/session";
 import { Button, Container, Screen } from "@/ui";
 import { colors, spacing } from "@/ui/theme";
 
@@ -12,7 +12,7 @@ export default function SellerRequestsScreen() {
   const router = useRouter();
   const [tick, setTick] = useState(0);
 
-  if (!session) {
+  if (!session || !hasRole(session, "seller")) {
     router.replace("/sign-in");
     return null;
   }
@@ -26,11 +26,17 @@ export default function SellerRequestsScreen() {
   const requests = getDemoState().requests.filter((r) =>
     ownedListingIds.has(r.listingId),
   );
+  const usersById = new Map(
+    getDemoState().users.map((user) => [user.id, user]),
+  );
+  const listingsById = new Map(
+    getDemoState().listings.map((listing) => [listing.id, listing]),
+  );
 
   return (
     <Screen testID="seller-requests">
       <Container>
-        <Text style={styles.heading}>Applications & interest</Text>
+        <Text style={styles.heading}>Review potential customers</Text>
         {requests.length === 0 ? (
           <Text style={styles.empty}>No requests yet</Text>
         ) : (
@@ -41,7 +47,9 @@ export default function SellerRequestsScreen() {
               testID={`seller-request-${request.id}`}
             >
               <Text style={styles.meta}>
-                {request.seekerId} · {request.kind} · {request.status}
+                {usersById.get(request.seekerId)?.displayName ?? request.seekerId}{" "}
+                · {listingsById.get(request.listingId)?.title ?? request.listingId}{" "}
+                · {request.kind} · {request.status}
               </Text>
               {request.status === "submitted" ? (
                 <View style={styles.actions}>

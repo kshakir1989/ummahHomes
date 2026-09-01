@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import type { Listing, ListingType } from "../domain/types";
+import { ListingImage } from "./ListingImage";
 import { colors, radius, spacing, typography } from "./theme";
 
 const TYPE_LABELS: Record<ListingType, string> = {
@@ -13,9 +14,15 @@ export interface ListingCardProps {
   listing: Listing;
   onPress?: () => void;
   testID?: string;
+  photoHeight?: number;
 }
 
-export function ListingCard({ listing, onPress, testID }: ListingCardProps) {
+export function ListingCard({
+  listing,
+  onPress,
+  testID,
+  photoHeight = 200,
+}: ListingCardProps) {
   const priceLabel =
     listing.type === "home_sale"
       ? `$${listing.price.toLocaleString()}`
@@ -28,9 +35,7 @@ export function ListingCard({ listing, onPress, testID }: ListingCardProps) {
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}
       testID={testID ?? `listing-card-${listing.id}`}
     >
-      <View style={styles.photoPlaceholder}>
-        <Text style={styles.photoText}>Photo</Text>
-      </View>
+      <ListingImage uri={listing.imageUrl} style={[styles.photo, { height: photoHeight }]} />
       <View style={styles.body}>
         <View style={styles.row}>
           <Text style={styles.price}>{priceLabel}</Text>
@@ -42,6 +47,13 @@ export function ListingCard({ listing, onPress, testID }: ListingCardProps) {
         <Text style={styles.location} numberOfLines={1}>
           {listing.locationText}
         </Text>
+        <View style={styles.amenityRow}>
+          {listing.amenities.slice(0, 3).map((amenity) => (
+            <Text key={amenity} style={styles.amenity} numberOfLines={1}>
+              {amenity}
+            </Text>
+          ))}
+        </View>
         <Text style={styles.ownerListed}>Owner-listed</Text>
       </View>
     </Pressable>
@@ -59,16 +71,7 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.95,
   },
-  photoPlaceholder: {
-    height: 160,
-    backgroundColor: colors.greenSoft,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  photoText: {
-    color: colors.brownMid,
-    fontSize: typography.sizeSmall,
-  },
+  photo: {},
   body: {
     padding: spacing.md,
     gap: spacing.xs,
@@ -100,6 +103,23 @@ const styles = StyleSheet.create({
   location: {
     fontSize: typography.sizeSmall,
     color: colors.textMuted,
+  },
+  amenityRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.xs,
+    marginTop: spacing.xs,
+  },
+  amenity: {
+    fontSize: typography.sizeSmall,
+    color: colors.brownMid,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.brownWarm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.chip,
+    overflow: "hidden",
   },
   ownerListed: {
     fontSize: typography.sizeSmall,

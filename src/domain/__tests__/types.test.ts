@@ -16,6 +16,7 @@ import {
   RequestKind,
   RequestStatus,
 } from "../types";
+import { LISTING_IMAGE_URLS } from "../../../data/listing-catalog";
 
 describe("domain types", () => {
   it("defines four listing types", () => {
@@ -53,10 +54,15 @@ describe("domain types", () => {
       type: "home_sale",
       title: "Cozy home",
       description: "Owner listed",
-      locationText: "Atlanta, GA",
+      locationText: "Atlanta, GA 30309",
+      city: "Atlanta",
+      state: "GA",
+      zipCode: "30309",
       price: 350000,
       currency: "USD",
       status: ListingStatus.Draft,
+      imageUrl: LISTING_IMAGE_URLS[0],
+      amenities: ["Central AC", "Private parking"],
       requiresBackgroundCheck: false,
       listingFeeCompleted: false,
       createdAt: "2026-01-01T00:00:00.000Z",

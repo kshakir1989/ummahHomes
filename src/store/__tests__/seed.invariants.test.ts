@@ -1,5 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
 import { buildSeedData, LISTING_TYPES } from "../../../data/seed";
+import { LISTING_IMAGE_URLS } from "../../../data/listing-catalog";
 import { ListingStatus } from "../../domain/types";
 
 describe("seed invariants", () => {
@@ -30,5 +31,21 @@ describe("seed invariants", () => {
     expect(
       seed.listings.every((l) => l.status === ListingStatus.Published),
     ).toBe(true);
+  });
+
+  it("uses Atlanta metro locations with photos and amenities", () => {
+    const allowedImages = new Set<string>(LISTING_IMAGE_URLS);
+    for (const listing of seed.listings) {
+      expect(listing.locationText).not.toMatch(/Demo City/i);
+      expect(listing.state).toBe("GA");
+      expect(listing.zipCode).toMatch(/^\d{5}$/);
+      expect(listing.imageUrl.startsWith("https://images.unsplash.com/")).toBe(
+        true,
+      );
+      expect(listing.imageUrl).toContain("w=1600");
+      expect(listing.imageUrl).toContain("q=85");
+      expect(allowedImages.has(listing.imageUrl)).toBe(true);
+      expect(listing.amenities.length).toBeGreaterThanOrEqual(3);
+    }
   });
 });

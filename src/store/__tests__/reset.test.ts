@@ -16,7 +16,7 @@ describe("reset demo data", () => {
       type: "home_rent",
       title: "Temp",
       description: "Temp",
-      locationText: "Atlanta, GA",
+      locationText: "Atlanta, GA 30309",
       price: 1000,
     });
     operations.publishListing(listing.id);

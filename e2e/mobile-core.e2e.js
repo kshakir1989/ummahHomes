@@ -1,13 +1,10 @@
 /**
  * Mobile core flows — mirrors features/mobile-core.feature for Detox.
- *
- * Prefer text + interactive testIDs: Screen container testIDs are unreliable
- * under Expo Router / Fabric without accessible wrappers (which break children).
  */
 const { by, device, element, expect: detoxExpect, waitFor } = require("detox");
 
 describe("Mobile core flows", () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await device.launchApp({
       newInstance: true,
       delete: true,
@@ -16,35 +13,27 @@ describe("Mobile core flows", () => {
     await device.disableSynchronization();
   });
 
-  beforeEach(async () => {
-    await device.launchApp({
-      newInstance: true,
-      launchArgs: { detoxEnableSynchronization: "0" },
-    });
-    await device.disableSynchronization();
-  });
-
   it("Browse listings on mobile", async () => {
-    await waitFor(element(by.text("Search listings")))
+    await waitFor(element(by.id("entry")))
       .toBeVisible()
       .withTimeout(60000);
     await element(by.id("entry-search-submit")).tap();
-    await waitFor(element(by.text("Search owner-listed homes")))
+    await waitFor(element(by.id("browse-search-input")))
       .toBeVisible()
       .withTimeout(30000);
     await detoxExpect(element(by.id("listing-card-listing-1"))).toBeVisible();
   });
 
   it("Sign in and apply on mobile", async () => {
-    await waitFor(element(by.text("Sign in")))
+    await waitFor(element(by.id("entry-sign-in")))
       .toBeVisible()
       .withTimeout(60000);
     await element(by.id("entry-sign-in")).tap();
-    await waitFor(element(by.text("Continue as demo user")))
+    await waitFor(element(by.id("sign-in-role-renter")))
       .toBeVisible()
       .withTimeout(15000);
     await element(by.id("sign-in-role-renter")).tap();
-    await waitFor(element(by.text("Search owner-listed homes")))
+    await waitFor(element(by.id("browse-search-input")))
       .toBeVisible()
       .withTimeout(30000);
 
@@ -60,7 +49,29 @@ describe("Mobile core flows", () => {
       .toBeVisible()
       .withTimeout(15000);
     await element(by.id("seeker-request-submit")).tap();
-    await waitFor(element(by.text("Search owner-listed homes")))
+    await waitFor(element(by.id("browse-search-input")))
+      .toBeVisible()
+      .withTimeout(30000);
+  });
+
+  it("Seller sign in routes to dashboard on mobile", async () => {
+    await waitFor(element(by.id("entry-sign-in")))
+      .toBeVisible()
+      .withTimeout(60000);
+    await element(by.id("entry-sign-in")).tap();
+    await element(by.id("sign-in-role-seller")).tap();
+    await waitFor(element(by.id("seller-dashboard")))
+      .toBeVisible()
+      .withTimeout(30000);
+  });
+
+  it("Sign up routes renter to browse on mobile", async () => {
+    await waitFor(element(by.id("entry-sign-up")))
+      .toBeVisible()
+      .withTimeout(60000);
+    await element(by.id("entry-sign-up")).tap();
+    await element(by.id("sign-up-role-renter")).tap();
+    await waitFor(element(by.id("browse-search-input")))
       .toBeVisible()
       .withTimeout(30000);
   });

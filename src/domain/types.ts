@@ -53,9 +53,14 @@ export interface Listing {
   title: string;
   description: string;
   locationText: string;
+  city: string;
+  state: string;
+  zipCode: string;
   price: number;
   currency: "USD";
   status: ListingStatus;
+  imageUrl: string;
+  amenities: string[];
   requiresBackgroundCheck: boolean;
   listingFeeCompleted: boolean;
   createdAt: string;

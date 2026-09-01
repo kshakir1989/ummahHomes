@@ -17,7 +17,7 @@ export interface DemoState {
   adminActions: AdminAction[];
 }
 
-const STATE_KEY = "ummahHomes.demoState";
+const STATE_KEY = "ummahHomes.demoState.v4";
 
 let state: DemoState = loadState();
 

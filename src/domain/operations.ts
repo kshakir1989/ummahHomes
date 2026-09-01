@@ -26,6 +26,14 @@ import {
 } from "./types";
 import { getDemoState, resetDemoData, updateDemoState } from "../store/demoStore";
 import { getSession, hasRole, requireSession, signIn, signOut } from "../store/session";
+import {
+  listingAmenities,
+  listingImageUrl,
+  listingLocation,
+} from "../../data/listing-catalog";
+import { parseAtlantaMetroLocation } from "../../data/atlanta-metro";
+import type { BrowseFilterCriteria } from "./browseFilters";
+import { applyBrowseFilters } from "./browseFilters";
 
 export type DomainErrorCode =
   | "AUTH_REQUIRED"
@@ -81,16 +89,25 @@ export const operations = {
       throw new DomainError("FORBIDDEN");
     }
     const now = new Date().toISOString();
+    const seedIndex = getDemoState().listings.length;
+    const resolved =
+      (input.locationText && parseAtlantaMetroLocation(input.locationText)) ||
+      listingLocation(seedIndex);
     const listing: Listing = {
       id: nextId("listing"),
       ownerId: session.id,
       type: input.type,
       title: input.title ?? "",
       description: input.description ?? "",
-      locationText: input.locationText ?? "",
+      locationText: input.locationText ?? resolved.locationText,
+      city: resolved.city,
+      state: resolved.state,
+      zipCode: resolved.zipCode,
       price: input.price ?? 0,
       currency: "USD",
       status: ListingStatus.Draft,
+      imageUrl: listingImageUrl(seedIndex),
+      amenities: listingAmenities(seedIndex),
       requiresBackgroundCheck: input.requiresBackgroundCheck ?? false,
       listingFeeCompleted: input.type !== "home_sale",
       createdAt: now,
@@ -109,7 +126,21 @@ export const operations = {
       throw new DomainError("VALIDATION");
     }
     assertOwnerOrAdmin(listing, session);
-    const updated = { ...listing, ...patch, updatedAt: new Date().toISOString() };
+    const patchWithLocation = { ...patch };
+    if (patch.locationText) {
+      const resolved = parseAtlantaMetroLocation(patch.locationText);
+      if (resolved) {
+        patchWithLocation.city = resolved.city;
+        patchWithLocation.state = resolved.state;
+        patchWithLocation.zipCode = resolved.zipCode;
+        patchWithLocation.locationText = resolved.locationText;
+      }
+    }
+    const updated = {
+      ...listing,
+      ...patchWithLocation,
+      updatedAt: new Date().toISOString(),
+    };
     updateDemoState((draft) => {
       const index = draft.listings.findIndex((l) => l.id === id);
       draft.listings[index] = updated;
@@ -190,12 +221,47 @@ export const operations = {
     return updated;
   },
 
-  listPublished(filters?: { type?: ListingType }): Listing[] {
-    return getDemoState().listings.filter(
-      (l) =>
-        l.status === ListingStatus.Published &&
-        (!filters?.type || l.type === filters.type),
+  listPublished(filters?: BrowseFilterCriteria): Listing[] {
+    const published = getDemoState().listings.filter(
+      (l) => l.status === ListingStatus.Published,
     );
+    return applyBrowseFilters(published, filters ?? {});
+  },
+
+  listMyListings(): Listing[] {
+    const session = requireSession();
+    if (!hasRole(session, "seller")) {
+      throw new DomainError("FORBIDDEN");
+    }
+    return getDemoState()
+      .listings.filter((l) => l.ownerId === session.id)
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  },
+
+  deleteListing(id: string): void {
+    const session = requireSession();
+    const listing = findListing(id);
+    if (!listing || listing.ownerId !== session.id) {
+      throw new DomainError("FORBIDDEN");
+    }
+    const requestIds = new Set(
+      getDemoState()
+        .requests.filter((r) => r.listingId === id)
+        .map((r) => r.id),
+    );
+    const threadIds = new Set(
+      getDemoState()
+        .threads.filter((t) => requestIds.has(t.applicationInterestId))
+        .map((t) => t.id),
+    );
+    updateDemoState((draft) => {
+      draft.listings = draft.listings.filter((l) => l.id !== id);
+      draft.requests = draft.requests.filter((r) => r.listingId !== id);
+      draft.threads = draft.threads.filter(
+        (t) => !requestIds.has(t.applicationInterestId),
+      );
+      draft.messages = draft.messages.filter((m) => !threadIds.has(m.threadId));
+    });
   },
 
   getListing(id: string): Listing {
@@ -220,6 +286,9 @@ export const operations = {
     const listing = findListing(listingId);
     if (!listing || !canCreateRequest(listing)) {
       throw new DomainError(listing?.status === ListingStatus.Booked ? "LISTING_BOOKED" : "NOT_PUBLISHED");
+    }
+    if (listing.ownerId === session.id) {
+      throw new DomainError("FORBIDDEN");
     }
     const kind = requestKindForListingType(listing.type);
     if (kind === RequestKind.Apply && !hasRole(session, "renter")) {

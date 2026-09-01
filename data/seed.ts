@@ -5,8 +5,14 @@ import {
   type ListingType,
   type User,
 } from "../src/domain/types";
+import {
+  listingAmenities,
+  listingImageUrl,
+  listingLocation,
+  listingTitle,
+} from "./listing-catalog";
 
-export const SEED_VERSION = 1;
+export const SEED_VERSION = 4;
 
 export const LISTING_TYPES: ListingType[] = [
   "home_sale",
@@ -29,6 +35,13 @@ const FINANCIAL_BACKGROUNDS = [
   "service",
   "education",
 ];
+
+const TYPE_LABEL: Record<ListingType, string> = {
+  home_sale: "home for sale",
+  home_rent: "home rental",
+  room_rent: "room rental",
+  basement_rent: "basement rental",
+};
 
 export interface SeedData {
   users: User[];
@@ -76,16 +89,23 @@ export function buildSeedData(): SeedData {
     const type = LISTING_TYPES[(i - 1) % LISTING_TYPES.length];
     const owner = sellers[(i - 1) % sellers.length];
     const isSale = type === "home_sale";
+    const location = listingLocation(i - 1);
+    const amenities = listingAmenities(i);
     listings.push({
       id: `listing-${i}`,
       ownerId: owner.id,
       type,
-      title: `Demo ${type.replace("_", " ")} #${i}`,
-      description: `Owner-listed ${type.replace("_", " ")} in the U.S. demo catalog.`,
-      locationText: `Demo City ${(i % 20) + 1}, GA`,
-      price: isSale ? 200000 + i * 1500 : 800 + (i % 12) * 50,
+      title: listingTitle(type, i - 1),
+      description: `Owner-listed ${TYPE_LABEL[type]} in ${location.locationText}. Welcoming space in a walkable, community-minded neighborhood.`,
+      locationText: location.locationText,
+      city: location.city,
+      state: location.state,
+      zipCode: location.zipCode,
+      price: isSale ? 285000 + i * 2200 : 950 + (i % 14) * 75,
       currency: "USD",
       status: ListingStatus.Published,
+      imageUrl: listingImageUrl(i - 1),
+      amenities,
       requiresBackgroundCheck: i % 5 === 0,
       listingFeeCompleted: isSale,
       createdAt: now,
