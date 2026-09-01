@@ -36,8 +36,32 @@ npm run android
 cd apps/ummahHomes
 npm run test:unit         # Jest domain/store
 npm run test:e2e          # Playwright + Gherkin (web) — requires Chromium: npx playwright install chromium
-npm run test:e2e:mobile   # Detox (iOS sim / Android emu) — needs native build + Detox config in e2e/
 ```
+
+### Mobile Detox (US4 / T059)
+
+**iOS (green on this machine):** requires Xcode, iPhone 17 simulator, Metro (`npx expo start` or an already-running Expo on :8081), and AppleSimulatorUtils:
+
+```bash
+brew tap wix/brew && brew trust wix/brew && brew install applesimutils
+cd apps/ummahHomes
+npx expo prebuild --platform ios     # creates ios/ (gitignored)
+# Keep Metro up in another terminal: npx expo start
+npm run test:e2e:mobile:build        # xcodebuild → Debug-iphonesimulator
+npm run test:e2e:mobile              # Detox on iPhone 17 simulator
+```
+
+`package.json` pins `react-native-worklets@0.10.1` / `react-native-reanimated@4.5.1` (Expo SDK 57 supported) so native builds do not hit the worklets `executeSync` break from transitive 0.12.x.
+
+**Android:** Detox config is in `.detoxrc.js` (`android.emu.debug`). Needs `adb` + AVD `Pixel_6_API_34` (or edit the AVD name):
+
+```bash
+npx expo prebuild --platform android
+npx detox build -c android.emu.debug
+npm run test:e2e:mobile:android
+```
+
+Gherkin living docs: `features/mobile-core.feature`. Detox driver: `e2e/mobile-core.e2e.js`.
 
 **UI gate:** Story UI requires `specs/001-owner-listing-demo/contracts/ui-design.md` → `Review: approved` (done for stage-1).
 

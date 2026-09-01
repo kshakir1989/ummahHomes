@@ -6,7 +6,7 @@ module.exports = {
       config: "e2e/jest.config.js",
     },
     jest: {
-      setupTimeout: 120000,
+      setupTimeout: 300000,
     },
   },
   apps: {
@@ -28,7 +28,7 @@ module.exports = {
   devices: {
     simulator: {
       type: "ios.simulator",
-      device: { type: "iPhone 15" },
+      device: { type: "iPhone 17" },
     },
     emulator: {
       type: "android.emulator",

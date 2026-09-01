@@ -6,6 +6,13 @@
     "orientation": "portrait",
     "scheme": "ummahhomes",
     "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "com.freshusa.ummahhomes",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.freshusa.ummahhomes"
+    },
     "web": {
       "bundler": "metro",
       "output": "single"
