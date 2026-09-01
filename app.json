@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "ummahHomes",
+    "slug": "ummah-homes",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "ummahhomes",
+    "userInterfaceStyle": "light",
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
