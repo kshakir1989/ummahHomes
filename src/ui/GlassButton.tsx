@@ -103,9 +103,9 @@ export function GlassButton({
         ]}
       >
         <Text
-          adjustsFontSizeToFit={shrink || fillWidth}
-          minimumFontScale={shrink || fillWidth ? 0.72 : undefined}
-          numberOfLines={shrink || fillWidth ? 1 : undefined}
+          adjustsFontSizeToFit={shrink}
+          minimumFontScale={shrink ? 0.72 : undefined}
+          numberOfLines={shrink ? 1 : undefined}
           style={[
             styles.label,
             compact && styles.labelCompact,
