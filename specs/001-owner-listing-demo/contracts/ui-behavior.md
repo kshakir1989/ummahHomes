@@ -19,7 +19,7 @@
 
 | Element | Contract |
 |---------|----------|
-| Brand | Product name centered in hero header; scales on narrow viewports |
+| Brand | Web: product name centered in hero header. Native mobile: brand glass sits left of the menu, stretches to the stacked nav height, and keeps “UMMAH HOMES” fully readable (not a small bubble) |
 | Nav | View Homes, Sign In, Sign Up stacked top-right; equal button width; label text centered |
 | Purpose | One short sentence: owner-listed U.S. homes, rooms, basements |
 | CTAs | Reach **Browse** and **Sign in** within three obvious steps (SC-005) |

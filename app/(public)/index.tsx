@@ -37,7 +37,17 @@ const PILLARS = [
   },
 ] as const;
 
-function brandScale(width: number) {
+function brandScale(width: number, mobileBesideNav: boolean) {
+  if (mobileBesideNav) {
+    // Fill remaining width beside the right menu; size up for readability.
+    if (width < 360) {
+      return { fontSize: 15, letterSpacing: 1.2 };
+    }
+    if (width < 420) {
+      return { fontSize: 17, letterSpacing: 1.6 };
+    }
+    return { fontSize: 20, letterSpacing: 2 };
+  }
   if (width < 340) {
     return { fontSize: 11, letterSpacing: 1.5 };
   }
@@ -53,8 +63,11 @@ function brandScale(width: number) {
 export default function EntryScreen() {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const compactTopBar = Platform.OS === "ios" || windowWidth < 768;
-  const brandMetrics = brandScale(windowWidth);
+  const isNativeMobile = Platform.OS === "ios" || Platform.OS === "android";
+  const compactTopBar = isNativeMobile || windowWidth < 768;
+  /** Mobile: brand sits left of nav and stretches to the menu stack height. */
+  const mobileBrandBesideNav = isNativeMobile;
+  const brandMetrics = brandScale(windowWidth, mobileBrandBesideNav);
   const heroHeight = Math.max(HERO_MIN_HEIGHT, Math.round(windowHeight * 0.82));
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -100,30 +113,45 @@ export default function EntryScreen() {
           <View
             style={[
               styles.topBar,
+              mobileBrandBesideNav && styles.topBarMobile,
               { paddingTop: insets.top + spacing.sm },
             ]}
           >
-            <View
-              style={styles.brandOverlay}
-              pointerEvents="box-none"
-            >
+            {mobileBrandBesideNav ? (
               <GlassText
                 variant="brand"
                 testID="entry-brand"
-                compact={compactTopBar}
+                compact
+                fillHeight
                 brandFontSize={brandMetrics.fontSize}
                 brandLetterSpacing={brandMetrics.letterSpacing}
-                style={[
-                  styles.brandBadge,
-                  {
-                    maxWidth:
-                      windowWidth - spacing.md * 2 - HERO_NAV_STACK_WIDTH - spacing.sm,
-                  },
-                ]}
+                style={styles.brandBesideNav}
               >
                 UMMAH HOMES
               </GlassText>
-            </View>
+            ) : (
+              <View style={styles.brandOverlay} pointerEvents="box-none">
+                <GlassText
+                  variant="brand"
+                  testID="entry-brand"
+                  compact={compactTopBar}
+                  brandFontSize={brandMetrics.fontSize}
+                  brandLetterSpacing={brandMetrics.letterSpacing}
+                  style={[
+                    styles.brandBadge,
+                    {
+                      maxWidth:
+                        windowWidth -
+                        spacing.md * 2 -
+                        HERO_NAV_STACK_WIDTH -
+                        spacing.sm,
+                    },
+                  ]}
+                >
+                  UMMAH HOMES
+                </GlassText>
+              </View>
+            )}
             <HeroDiscoverNav />
           </View>
           <View style={styles.heroCopy}>
@@ -265,6 +293,11 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: spacing.md,
   },
+  topBarMobile: {
+    justifyContent: "flex-start",
+    alignItems: "stretch",
+    gap: spacing.sm,
+  },
   brandOverlay: {
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
@@ -273,6 +306,9 @@ const styles = StyleSheet.create({
   },
   brandBadge: {
     maxWidth: "100%",
+  },
+  brandBesideNav: {
+    marginRight: 0,
   },
   heroCopy: {
     zIndex: 2,

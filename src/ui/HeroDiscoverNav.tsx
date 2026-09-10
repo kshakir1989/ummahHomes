@@ -81,6 +81,7 @@ export function HeroDiscoverNav() {
 const styles = StyleSheet.create({
   navStack: {
     width: HERO_NAV_STACK_WIDTH,
+    flexShrink: 0,
     alignItems: "stretch",
     gap: spacing.xs,
   },
