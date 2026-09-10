@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ummahHomes — apps/ummahHomes",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "viewBox": [1180, 680],
+    "repository": {
+      "url": "https://github.com/kshakir1989/freshusa-apps",
+      "revision": "32cc988e42bc0ebb9d59f655a2f0182c7ac8269a"
+    },
+    "views": [
+      {
+        "id": "product-path",
+        "label": "Product path",
+        "focus": ["spec-kit", "domain-store", "expo-app", "demo-clients", "demo-roles"],
+        "note": "Spec Kit stage-1 specs drive domain/store and the Expo marketplace demo."
+      },
+      {
+        "id": "verify-path",
+        "label": "Verify",
+        "focus": ["playwright-e2e", "detox-mobile", "expo-app", "domain-store"],
+        "note": "Playwright covers web Gherkin; Detox covers iOS mobile-core."
+      },
+      {
+        "id": "surfaces-path",
+        "label": "Demo surfaces",
+        "focus": ["expo-app", "demo-clients", "demo-roles", "demo-store"],
+        "note": "One Expo app demos on web, iOS Simulator, and Android Emulator."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "spec-kit",
+      "type": "messagebus",
+      "label": "Spec Kit",
+      "sublabel": "assess → specify",
+      "pos": [48, 268],
+      "size": [150, 68],
+      "sources": [
+        { "path": "apps/ummahHomes/specs/001-owner-listing-demo/spec.md", "label": "stage-1 spec" },
+        { "path": "apps/ummahHomes/specs/001-owner-listing-demo/tasks.md", "label": "tasks" }
+      ]
+    },
+    {
+      "id": "domain-store",
+      "type": "database",
+      "label": "Domain + store",
+      "sublabel": "seed · session · ops",
+      "pos": [260, 268],
+      "size": [158, 68],
+      "sources": [
+        { "path": "apps/ummahHomes/src/domain/operations.ts", "label": "operations" },
+        { "path": "apps/ummahHomes/src/store/demoStore.ts", "label": "demoStore" }
+      ]
+    },
+    {
+      "id": "expo-app",
+      "type": "frontend",
+      "label": "ummahHomes",
+      "sublabel": "Expo Router",
+      "brand": "react",
+      "pos": [482, 268],
+      "size": [158, 68],
+      "sources": [
+        { "path": "apps/ummahHomes/package.json", "label": "package.json" },
+        { "path": "apps/ummahHomes/app/(public)/index.tsx", "label": "entry" }
+      ]
+    },
+    {
+      "id": "demo-clients",
+      "type": "cloud",
+      "label": "Demo clients",
+      "sublabel": "web · iOS · Android",
+      "pos": [704, 268],
+      "size": [158, 68],
+      "sources": [
+        { "path": "apps/ummahHomes/README.md", "label": "demo README" }
+      ]
+    },
+    {
+      "id": "demo-roles",
+      "type": "external",
+      "label": "Demo roles",
+      "sublabel": "Seller · Buyer · Renter · Admin",
+      "pos": [926, 268],
+      "size": [170, 68]
+    },
+    {
+      "id": "playwright-e2e",
+      "type": "messagebus",
+      "label": "Playwright e2e",
+      "sublabel": "Gherkin · web",
+      "pos": [482, 96],
+      "size": [158, 64],
+      "sources": [
+        { "path": "apps/ummahHomes/features/seeker-requests.feature", "label": "seeker" },
+        { "path": "apps/ummahHomes/package.json", "label": "test:e2e" }
+      ]
+    },
+    {
+      "id": "detox-mobile",
+      "type": "messagebus",
+      "label": "Detox e2e",
+      "sublabel": "Gherkin · iOS",
+      "pos": [704, 96],
+      "size": [158, 64],
+      "sources": [
+        { "path": "apps/ummahHomes/e2e/mobile-core.e2e.js", "label": "mobile-core" }
+      ]
+    },
+    {
+      "id": "demo-store",
+      "type": "backend",
+      "label": "demoStore",
+      "sublabel": "role / browse MP4s",
+      "pos": [704, 440],
+      "size": [158, 64],
+      "sources": [
+        { "path": "apps/ummahHomes/demoStore/README.md", "label": "recordings" }
+      ]
+    },
+    {
+      "id": "monorepo",
+      "type": "messagebus",
+      "label": "freshusa-apps",
+      "sublabel": "001-owner-listing-demo",
+      "brand": "github",
+      "pos": [260, 96],
+      "size": [158, 64],
+      "sources": [
+        { "path": "apps/ummahHomes/README.md", "label": "app README" }
+      ]
+    },
+    {
+      "id": "role-hubs",
+      "type": "frontend",
+      "label": "Role hubs",
+      "sublabel": "seller · buyer · renter · admin",
+      "pos": [482, 440],
+      "size": [158, 64],
+      "sources": [
+        { "path": "apps/ummahHomes/app/(seller)/dashboard.tsx", "label": "seller" },
+        { "path": "apps/ummahHomes/app/(admin)/admin.tsx", "label": "admin" }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "apps/ummahHomes",
+      "wraps": ["domain-store", "expo-app", "playwright-e2e", "detox-mobile", "role-hubs", "demo-store"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "spec-to-domain",
+      "from": "spec-kit",
+      "to": "domain-store",
+      "label": "contracts",
+      "variant": "emphasis"
+    },
+    {
+      "id": "domain-to-expo",
+      "from": "domain-store",
+      "to": "expo-app",
+      "label": "in-memory demo",
+      "variant": "emphasis",
+      "labelDy": -28
+    },
+    {
+      "id": "expo-to-clients",
+      "from": "expo-app",
+      "to": "demo-clients",
+      "label": "Expo run",
+      "variant": "emphasis"
+    },
+    {
+      "id": "clients-to-roles",
+      "from": "demo-clients",
+      "to": "demo-roles",
+      "label": "walkthrough",
+      "variant": "emphasis"
+    },
+    {
+      "id": "playwright-to-expo",
+      "from": "playwright-e2e",
+      "to": "expo-app",
+      "label": "web Gherkin",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 20
+    },
+    {
+      "id": "detox-to-clients",
+      "from": "detox-mobile",
+      "to": "demo-clients",
+      "label": "iOS Gherkin",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 20
+    },
+    {
+      "id": "monorepo-to-spec",
+      "from": "monorepo",
+      "to": "spec-kit",
+      "label": "hosts",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 20
+    },
+    {
+      "id": "expo-to-hubs",
+      "from": "expo-app",
+      "to": "role-hubs",
+      "label": "routes",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 20
+    },
+    {
+      "id": "clients-to-demos",
+      "from": "demo-clients",
+      "to": "demo-store",
+      "label": "record",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 20
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Stage-1 demo",
+      "items": [
+        "Owner-listed sale/rent marketplace · ≥100 seed listings"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Surfaces",
+      "items": [
+        "Expo web, iOS Simulator, Android Emulator · four role hubs"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Verification",
+      "items": [
+        "Jest · Playwright+Gherkin web · Detox iOS · demoStore MP4s"
+      ]
+    }
+  ]
+}
