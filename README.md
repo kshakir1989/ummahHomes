@@ -120,6 +120,8 @@ Role/browse MP4 scripts and output paths: `apps/ummahHomes/demoStore/README.md` 
 cd apps/ummahHomes
 npm run test:unit         # Jest domain/store
 npm run test:e2e          # Playwright + Gherkin (web) — requires Chromium: npx playwright install chromium
+npm run test:coverage     # Same Chromium scenarios + Monocart V8 → coverage/ (report-only)
+npm run test:qaiq         # Playwright suite hygiene (report-only; high score ≠ well-tested)
 ```
 
 ### Mobile Detox (US4 / T059)

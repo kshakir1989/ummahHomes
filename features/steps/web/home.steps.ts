@@ -1,7 +1,5 @@
-import { createBdd } from "playwright-bdd";
+import { Given, When, Then } from "../../fixtures";
 import { expect } from "@playwright/test";
-
-const { Then, When } = createBdd();
 
 Then("I see the home brand", async ({ page }) => {
   await expect(page.getByTestId("entry-brand")).toBeVisible();

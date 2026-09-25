@@ -1,7 +1,5 @@
-import { createBdd } from "playwright-bdd";
+import { Given, When, Then } from "../../fixtures";
 import { expect } from "@playwright/test";
-
-const { Given, When, Then } = createBdd();
 
 async function signInAs(page: import("@playwright/test").Page, testId: string) {
   await page.goto("/sign-in");

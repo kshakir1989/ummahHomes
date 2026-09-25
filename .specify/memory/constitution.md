@@ -1,10 +1,10 @@
 <!--
 Sync Impact Report
 - Version change: 1.2.0 → 1.2.1
-- Modified principles: IX. Teach-Along — operational pause protocol
-- Compliance: includes Teach-Along
+- Modified principles: IX. Action-Report — operational pause protocol
+- Compliance: includes Action-Report
 - 1.2.0: Added VIII. Figma First UI; UI contracts split
-- 1.2.1: Teach-Along pause protocol; monorepo AGENTS.md also enforces
+- 1.2.1: Action-Report pause protocol; monorepo AGENTS.md also enforces
 -->
 
 # ummahHomes Constitution
@@ -71,14 +71,14 @@ in `contracts/ui-design.md` with `Review: approved`. FigJam is process only;
 design files are the visual source of truth. Rationale: web-primary demo
 requires reviewable look-and-feel before code; prevents throwaway UI rework.
 
-### IX. Teach-Along (NON-NEGOTIABLE)
-Before each non-trivial step (commands, edits, commits, deploys, or multi-file
-design), agents MUST pause and teach in plain language: (1) what will change,
-(2) why this option over named alternatives, (3) how the component fits
-ummahHomes. Agents MUST NOT run tools or write files for that step until the
-owner replies **go**, asks a follow-up, or explicitly skips Teach-Along for
-that step. Rationale: the owner learns every component and decision; Ask First
-is permission, Teach-Along is understanding.
+### IX. Action-Report (NON-NEGOTIABLE)
+Agents MUST pause before each non-trivial step with an Action-Report:
+bullet list of concrete changes, then an Explanation paragraph (context,
+rejected alternative, fit to this app). Do **not** use What/Why/How. Do
+**not** proceed until the owner replies **go**, asks a follow-up, or
+explicitly skips Action-Report for that step. Ask First is permission;
+Action-Report is understanding.
+
 
 ## Product Constraints
 
@@ -148,7 +148,7 @@ Versioning:
 - PATCH: clarification, wording, or non-semantic fix.
 
 Compliance: before commands, edits, commits, or deploys, agents MUST check
-Ask First, Assess Before Specify, TDD, DRY, Figma First UI, Teach-Along, and
+Ask First, Assess Before Specify, TDD, DRY, Figma First UI, Action-Report, and
 the Cursor usage cap when present. Complexity (new services, paid tools, extra
 screens, remote data) MUST be justified against Cheap Path and Product
 Constraints or deferred.
