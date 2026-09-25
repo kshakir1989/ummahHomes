@@ -1,5 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
+import type { CoverageReportOptions } from "monocart-coverage-reports";
 
 const testDir = defineBddConfig({
   features: [
@@ -17,12 +18,45 @@ const testDir = defineBddConfig({
   outputDir: ".features-gen",
 });
 
+const coverageOptions: CoverageReportOptions = {
+  outputDir: "coverage",
+  reports: [
+    ["v8", { inline: true }],
+    "console-summary",
+    "lcov",
+  ],
+  entryFilter: (entry) => {
+    const url = String(entry.url ?? "");
+    if (!url || url.startsWith("node:")) return false;
+    if (url.includes("node_modules")) return false;
+    if (url.includes(".features-gen")) return false;
+    return true;
+  },
+  sourceFilter: (sourcePath) => {
+    const p = sourcePath.replace(/\\/g, "/");
+    if (p.includes("node_modules")) return false;
+    if (p.includes(".features-gen")) return false;
+    return /(^|\/)(app|src)\/.+\.(ts|tsx)$/.test(p);
+  },
+};
+
 export default defineConfig({
   testDir,
   timeout: 60_000,
   expect: { timeout: 15_000 },
   fullyParallel: false,
   retries: 0,
+  reporter: [
+    ["list"],
+    [
+      "monocart-reporter",
+      {
+        name: "ummahHomes e2e coverage",
+        outputFile: "coverage/monocart-report.html",
+        coverage: coverageOptions,
+      },
+    ],
+  ],
   use: {
     ...devices["Desktop Chrome"],
     baseURL: "http://127.0.0.1:19006",

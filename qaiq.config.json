@@ -1,0 +1,11 @@
+{
+  "exclude": [
+    "node_modules",
+    "coverage",
+    ".features-gen",
+    "android",
+    "ios",
+    ".expo",
+    "dist"
+  ]
+}

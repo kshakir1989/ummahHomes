@@ -1,7 +1,5 @@
-import { createBdd } from "playwright-bdd";
+import { Given, When, Then } from "../../fixtures";
 import { expect } from "@playwright/test";
-
-const { Given, When, Then } = createBdd();
 
 const ROLE_TEST_IDS: Record<string, string> = {
   seller: "sign-in-role-seller",

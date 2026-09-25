@@ -17,7 +17,9 @@
     "record:demos:ios": "bash demo/record-ios.sh",
     "record:browse:web": "node demo/record-browse.mjs",
     "record:browse:ios": "bash demo/record-browse-ios.sh",
-    "prebuild:native": "npx expo prebuild --clean"
+    "prebuild:native": "npx expo prebuild --clean",
+    "test:coverage": "COVERAGE=1 bddgen --config playwright.coverage.config.ts && COVERAGE=1 playwright test --config playwright.coverage.config.ts",
+    "test:qaiq": "qaiq ."
   },
   "dependencies": {
     "@expo/metro-runtime": "~57.0.11",
@@ -36,11 +38,13 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
+    "@rafaellabarrocas/qaiq": "^0.1.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^26.2.0",
     "@types/react": "~19.2.2",
     "detox": "^20.46.0",
     "jest": "^29.7.0",
+    "monocart-reporter": "^2.13.1",
     "playwright-bdd": "^9.2.0",
     "ts-jest": "^29.2.5",
     "typescript": "~6.0.3"
